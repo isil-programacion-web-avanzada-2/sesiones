@@ -315,10 +315,20 @@ Babel convierte sintaxis moderna y JSX en codigo que puede ser procesado dentro 
 ~~~json
 {
   "presets": [
-    ["@babel/preset-env", { "useBuiltIns": "entry", "corejs": 3 }],
-    ["@babel/preset-react", { "runtime": "automatic" }]
-  ],
-  "plugins": ["@babel/plugin-syntax-dynamic-import"]
+    [
+      "@babel/preset-env",
+      {
+        "targets": "defaults"
+      }
+    ],
+    [
+      "@babel/preset-react",
+      {
+        "runtime": "automatic",
+        "development": false
+      }
+    ]
+  ]
 }
 ~~~
 
@@ -336,11 +346,8 @@ npm install -D @babel/plugin-syntax-dynamic-import core-js
 **Explicacion de elementos:**
 
 - `@babel/preset-env`: transforma caracteristicas modernas de JavaScript.
-- `useBuiltIns`: indica como tratar compatibilidad adicional mediante polyfills.
-- `corejs`: especifica la version de Core JS usada por Babel.
 - `@babel/preset-react`: transforma JSX.
 - `runtime: automatic`: evita importar React manualmente solo para JSX en proyectos modernos.
-- `@babel/plugin-syntax-dynamic-import`: permite reconocer importaciones dinamicas usadas en lazy loading.
 
 **Actividad para ti:**  
 Explica con tus palabras la diferencia entre Webpack y Babel antes de configurar Webpack.
@@ -384,7 +391,7 @@ const Dotenv = require('dotenv-webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = (env, argv) => {
-  const modo = argv.mode || 'development';
+  const modo = argv.mode || 'production';
   const analizar = Boolean(env && env.analyze);
 
   return {
@@ -825,6 +832,8 @@ createRoot(document.getElementById('root')).render(<App />);
 4. Modifica `index.jsx` para iniciar el monitoreo global.
 5. Ejecuta `npm run start` y observa la consola.
 6. Ejecuta `npm run build` y verifica que el build compile.
+7. Ejecutar servidor local `npm install -g serve`
+8. Ejecutar compilado en el servidor local `serve dist`
 
 **Actividad para ti:**  
 Agrega un `logger.info` dentro de `App.jsx` para registrar que la aplicacion inicio en un entorno determinado.
