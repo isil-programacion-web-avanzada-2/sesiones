@@ -1,538 +1,270 @@
-# Guia del estudiante: Despliegue cloud de aplicaciones web
+# FASE 13 - Guia del estudiante mejorada
 
-**Elaborado por el docente**  
-**Proyecto academico:** Lideratec Academy  
-**Blog:** https://lideratecacademy.com/  
-**Canal YouTube:** https://www.youtube.com/@LideratecAcademy
+## Proyecto practico desde cero: Mini Notas Cloud
 
----
-
-## 1. Presentacion de la sesion
-
-En esta guia aprenderas a llevar una aplicacion web desde el entorno local hacia internet usando un flujo cloud moderno. La sesion trabaja cuatro componentes principales:
-
-1. **Vercel** para publicar el frontend.
-2. **Render** para ejecutar el backend.
-3. **MongoDB Atlas** para almacenar datos en la nube.
-4. **GitHub Actions** como introduccion a CI/CD.
-
-La idea central es comprender que una aplicacion web moderna no se publica como una sola pieza. Normalmente se separa en frontend, backend y base de datos. Cada parte se despliega en una plataforma adecuada y se conecta mediante variables de entorno.
+**Curso:** Programacion Web Avanzada  
+**Tema:** Despliegue de aplicaciones en la nube  
+**Stack:** React + Vite, Node.js + Express, MongoDB Atlas, Render y Vercel  
+**Producto final:** una aplicacion basica de notas desplegada en internet.
 
 ---
 
-## 2. Objetivo de aprendizaje
+## 1. Que vas a construir
 
-Al finalizar la sesion, podras **aplicar un flujo basico de despliegue cloud** para publicar una aplicacion web separando frontend, backend y base de datos, configurando variables de entorno y validando la conexion entre servicios.
+Construiras un proyecto pequeno llamado **Mini Notas Cloud**.
 
----
+La aplicacion tendra dos partes:
 
-## 3. Resultado observable
+1. **Frontend en React/Vite**  
+   Permite ver un formulario y listar notas.
 
-Al terminar la practica, deberias poder explicar y ejecutar este flujo:
+2. **Backend en Node.js/Express**  
+   Expone una API REST basica para guardar y listar notas.
+
+3. **Base de datos en MongoDB Atlas**  
+   Guarda las notas en la nube.
+
+Luego desplegaras:
+
+- Frontend en **Vercel**.
+- Backend en **Render**.
+- Base de datos en **MongoDB Atlas**.
+
+Arquitectura final:
 
 ```text
-GitHub -> Vercel -> Render -> MongoDB Atlas
+Usuario
+  ↓
+Frontend React en Vercel
+  ↓ VITE_API_URL
+Backend Express en Render
+  ↓ MONGODB_URI
+MongoDB Atlas
 ```
-
-Y tambien deberias poder identificar estas variables:
-
-| Variable | Donde se configura | Para que sirve |
-|---|---|---|
-| `VITE_API_URL` | Vercel | Indica al frontend la URL del backend. |
-| `PORT` | Render | Puerto usado por el servidor. Render puede asignarlo automaticamente. |
-| `NODE_ENV` | Render | Indica que la aplicacion corre en produccion. |
-| `MONGODB_URI` | Render | Cadena de conexion hacia MongoDB Atlas. |
-| `FRONTEND_URL` | Render | URL del frontend permitida para CORS. |
 
 ---
 
-## 4. Herramientas necesarias
+## 2. Requisitos previos
 
-| Herramienta | Uso en la sesion | Enlace oficial | Validacion rapida |
-|---|---|---|---|
-| GitHub | Repositorio del codigo | https://github.com/ | Iniciar sesion y ver el repositorio. |
-| Vercel | Despliegue del frontend | https://vercel.com/ | Acceder al dashboard. |
-| Render | Despliegue del backend | https://render.com/ | Acceder al dashboard. |
-| MongoDB Atlas | Base de datos cloud | https://www.mongodb.com/atlas | Acceder al proyecto de Atlas. |
-| Node.js y npm | Ejecutar y construir proyectos JavaScript | https://nodejs.org/ | `node -v` y `npm -v`. |
-| Visual Studio Code | Edicion del proyecto | https://code.visualstudio.com/ | Abrir la carpeta del proyecto. |
+Antes de iniciar, debes tener:
 
-### Requisitos minimos
+- Node.js LTS instalado.
+- Visual Studio Code.
+- Git instalado.
+- Cuenta de GitHub.
+- Cuenta de Vercel.
+- Cuenta de Render.
+- Cuenta de MongoDB Atlas.
+- Navegador web actualizado.
 
-- Cuenta activa en GitHub.
-- Proyecto frontend versionado en GitHub.
-- Proyecto backend versionado en GitHub.
-- Node.js instalado.
-- Acceso a internet.
-- Navegador actualizado.
-
-### Validar Node.js y npm
-
-Abre una terminal y ejecuta:
+Verifica Node y npm:
 
 ```bash
 node -v
 npm -v
 ```
 
-**Resultado esperado:** se muestran dos versiones, por ejemplo `v22.x.x` o `v24.x.x` para Node.js y una version de npm.
-
-**Error comun:** el comando no se reconoce.  
-**Correccion:** reinstala Node.js desde la pagina oficial y reinicia la terminal.
+Si ambos comandos muestran version, puedes continuar.
 
 ---
 
-## 5. Nota tecnica operativa
+## 3. Estructura general del trabajo
 
-Las plataformas cloud pueden cambiar su interfaz, nombres de botones o versiones recomendadas. Lo importante es conservar el flujo tecnico:
-
-1. Conectar repositorio.
-2. Configurar comandos.
-3. Configurar variables de entorno.
-4. Desplegar.
-5. Validar URL, logs y conexion.
-
-Tambien debes considerar estas recomendaciones operativas:
-
-- Si cambias variables de entorno en Vercel, debes hacer un nuevo deployment para que el frontend use el nuevo valor.
-- En Render, un servicio gratuito puede suspenderse si no recibe trafico durante un tiempo. La primera peticion posterior puede tardar mas.
-- En MongoDB Atlas, la interfaz puede mostrar opciones actuales como Free o Flex. El flujo principal sigue siendo crear base de datos, usuario, acceso de red y connection string.
-- En GitHub Actions, usa versiones actuales de las acciones cuando prepares una practica real.
-
----
-
-# Bloques de aprendizaje
-
-## Bloque 1 - Entender el despliegue cloud
-
-**Objetivo del bloque:**  
-Diferenciar entre ejecutar una aplicacion en local y publicarla en internet.
-
-**Concepto trabajado:**  
-Deployment o despliegue.
-
-**Explicacion breve:**  
-Deployment significa llevar una aplicacion desde tu computadora local hacia un entorno accesible por internet. Cuando ejecutas una app con `npm run dev`, solo esta disponible para desarrollo. Cuando la despliegas, otros usuarios pueden abrir una URL publica y usarla.
-
-**Ejemplo guiado:**
+Crearemos dos carpetas separadas:
 
 ```text
-Local: http://localhost:5173
-Produccion: https://mi-frontend.vercel.app
+mini-notas-cloud/
+  mini-notas-backend/
+  mini-notas-frontend/
 ```
 
-**Paso a paso:**
-
-1. Ejecutas el proyecto localmente para desarrollar.
-2. Subes el codigo a GitHub para versionarlo.
-3. Conectas el repositorio a una plataforma cloud.
-4. La plataforma construye y publica una URL.
-5. Verificas que la aplicacion sea accesible desde el navegador.
-
-**Actividad para ti:**  
-Escribe en tus palabras la diferencia entre `localhost` y una URL publica.
-
-**Espacio para responder:**
-
-- ¿Que significa deployment?
-- ¿Por que `npm run dev` no es lo mismo que desplegar?
-- ¿Que evidencia demuestra que una aplicacion esta publicada?
-
-**Resultado esperado:**  
-Puedes explicar que deployment es publicar una aplicacion para usuarios reales.
-
-**Error comun a evitar:**  
-Creer que si la aplicacion funciona en local, ya esta lista para usuarios externos.
-
-**Mini reto:**  
-Dibuja el flujo: computadora local -> GitHub -> plataforma cloud -> URL publica.
-
----
-
-## Bloque 2 - Reconocer la arquitectura frontend, backend y base de datos
-
-**Objetivo del bloque:**  
-Identificar el rol de cada componente en una aplicacion web moderna.
-
-**Concepto trabajado:**  
-Separacion frontend, backend y base de datos.
-
-**Explicacion breve:**  
-El frontend es la interfaz que ve el usuario. El backend procesa la logica del servidor. La base de datos guarda informacion. En esta sesion, el frontend se publica en Vercel, el backend se ejecuta en Render y la base de datos se configura en MongoDB Atlas.
-
-**Ejemplo guiado:**
+Tambien se recomienda crear dos repositorios en GitHub:
 
 ```text
-Usuario -> Frontend en Vercel -> Backend en Render -> MongoDB Atlas
+mini-notas-backend
+mini-notas-frontend
 ```
 
-**Paso a paso:**
+Esto facilita conectar cada parte con su plataforma:
 
-1. El usuario abre la URL del frontend.
-2. El frontend llama a la API usando `VITE_API_URL`.
-3. El backend procesa la solicitud.
-4. El backend se conecta a MongoDB Atlas usando `MONGODB_URI`.
-5. La respuesta vuelve al frontend.
-
-**Actividad para ti:**  
-Completa la tabla:
-
-| Componente | Plataforma | Funcion |
+| Parte | Plataforma | Repositorio recomendado |
 |---|---|---|
-| Frontend | | |
-| Backend | | |
-| Base de datos | | |
-
-**Espacio para responder:**
-
-- ¿Que ve el usuario?
-- ¿Donde se procesa la logica del servidor?
-- ¿Donde se almacenan los datos?
-
-**Resultado esperado:**  
-Puedes explicar el flujo completo de una aplicacion desplegada.
-
-**Error comun a evitar:**  
-Pensar que Vercel y Render hacen exactamente lo mismo.
-
-**Mini reto:**  
-Explica por que el frontend no debe conectarse directamente a MongoDB Atlas.
+| Frontend | Vercel | mini-notas-frontend |
+| Backend | Render | mini-notas-backend |
+| Base de datos | MongoDB Atlas | No aplica |
 
 ---
 
-## Bloque 3 - Publicar el frontend con Vercel
+# PARTE A - Crear backend desde cero
 
-**Objetivo del bloque:**  
-Comprender el procedimiento para publicar el frontend desde GitHub.
+## 4. Crear carpeta del backend
 
-**Concepto trabajado:**  
-Despliegue frontend con Vercel.
-
-**Explicacion breve:**  
-Vercel permite conectar un repositorio, detectar proyectos frontend como React/Vite, ejecutar el build y publicar el resultado en una URL publica. En proyectos Vite, la carpeta de salida comunmente es `dist`.
-
-**Ejemplo guiado:**
-
-```text
-Repositorio GitHub -> Vercel -> Build -> URL vercel.app
-```
-
-**Paso a paso:**
-
-1. Ingresa a https://vercel.com/.
-2. Inicia sesion con GitHub.
-3. Selecciona **Add New** y luego **Project**.
-4. Elige el repositorio del frontend.
-5. Verifica que el framework detectado sea Vite si tu proyecto usa Vite.
-6. Revisa la configuracion:
-   - Install Command: `npm install`
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
-7. No publiques todavia si falta configurar `VITE_API_URL`.
-
-**Actividad para ti:**  
-Escribe que hace cada comando:
+Abre una terminal y ejecuta:
 
 ```bash
-npm install
-npm run build
+mkdir mini-notas-cloud
+cd mini-notas-cloud
+mkdir mini-notas-backend
+cd mini-notas-backend
+npm init -y
 ```
 
-**Espacio para responder:**
+Instala dependencias:
 
-- ¿Que significa Build Command?
-- ¿Que significa Output Directory?
-- ¿Por que Vercel necesita acceso al repositorio?
-
-**Resultado esperado:**  
-Puedes preparar un proyecto frontend para despliegue en Vercel.
-
-**Error comun a evitar:**  
-Hacer deploy sin revisar la configuracion del build.
-
-**Mini reto:**  
-Busca en tu `package.json` el script que ejecuta el build.
-
----
-
-## Bloque 4 - Configurar `VITE_API_URL` en Vercel
-
-**Objetivo del bloque:**  
-Configurar la URL del backend para que el frontend pueda consumir la API.
-
-**Concepto trabajado:**  
-Variables de entorno en frontend.
-
-**Explicacion breve:**  
-En Vite, las variables disponibles para el frontend deben comenzar con `VITE_`. Por eso usamos `VITE_API_URL`. Esta variable guarda la URL del backend publicado en Render.
-
-**Ejemplo guiado:**
-
-```text
-Key: VITE_API_URL
-Value: https://mi-app-backend.onrender.com
+```bash
+npm init -y
+npm install express mongoose cors dotenv
+npm install -D nodemon
 ```
 
-**Uso dentro del codigo frontend:**
-
-```javascript
-const API_URL = import.meta.env.VITE_API_URL;
-
-async function obtenerUsuarios() {
-  const respuesta = await fetch(`${API_URL}/api/usuarios`);
-  const datos = await respuesta.json();
-  return datos;
-}
+si sale error de auditoria ejecuta esto:
+```bash
+npm audit
+npm audit fix
+npm audit
 ```
 
-**Explicacion linea por linea:**
+evitar usar: 
+```bash
+npm audit fix --force
+```
 
-| Linea | Que hace |
+Significado de cada paquete:
+
+| Paquete | Funcion |
 |---|---|
-| `const API_URL = import.meta.env.VITE_API_URL;` | Lee la variable configurada en Vercel. |
-| `fetch(...)` | Hace una solicitud HTTP hacia el backend. |
-| `respuesta.json()` | Convierte la respuesta en datos JavaScript. |
-| `return datos;` | Devuelve la informacion para usarla en la interfaz. |
-
-**Paso a paso:**
-
-1. Entra al proyecto en Vercel.
-2. Abre **Settings**.
-3. Entra a **Environment Variables**.
-4. Agrega `VITE_API_URL`.
-5. Coloca como valor la URL publica del backend.
-6. Guarda el cambio.
-7. Ejecuta un nuevo deployment o redeploy.
-
-**Actividad para ti:**  
-Indica si las siguientes variables son correctas para Vite:
-
-| Variable | Correcta para frontend Vite? | Motivo |
-|---|---|---|
-| `API_URL` | | |
-| `VITE_API_URL` | | |
-| `MONGODB_URI` | | |
-
-**Espacio para responder:**
-
-- ¿Por que la variable debe empezar con `VITE_`?
-- ¿Por que no se debe poner `MONGODB_URI` en el frontend?
-- ¿Que debes hacer despues de cambiar una variable en Vercel?
-
-**Resultado esperado:**  
-El frontend usa la URL correcta para llamar al backend.
-
-**Error comun a evitar:**  
-Cambiar `VITE_API_URL` y olvidar hacer redeploy.
-
-**Mini reto:**  
-Escribe una URL ficticia de backend y explica en que lugar la configurarias.
+| express | Crear el servidor y las rutas API |
+| mongoose | Conectar Node.js con MongoDB |
+| cors | Permitir comunicacion entre frontend y backend |
+| dotenv | Leer variables desde archivo .env en local |
+| nodemon | Reiniciar servidor automaticamente en desarrollo |
 
 ---
 
-## Bloque 5 - Desplegar el backend con Render
+## 5. Configurar package.json del backend
 
-**Objetivo del bloque:**  
-Crear un Web Service para ejecutar una API Node.js/Express.
-
-**Concepto trabajado:**  
-Despliegue backend en Render.
-
-**Explicacion breve:**  
-Render ejecuta servicios backend. Un backend no es solo una carpeta de archivos; necesita arrancar un proceso de servidor, escuchar solicitudes y responder. Para eso se crea un Web Service.
-
-**Ejemplo guiado:**
-
-```text
-Repositorio backend -> Render Web Service -> URL onrender.com
-```
-
-**Paso a paso:**
-
-1. Ingresa a https://render.com/.
-2. Inicia sesion con GitHub.
-3. Selecciona **New** y luego **Web Service**.
-4. Conecta el repositorio del backend.
-5. Configura:
-   - Environment: `Node`
-   - Branch: `main`
-   - Build Command: `npm install`
-   - Start Command: `npm start`
-6. Selecciona el plan disponible para practica.
-7. No finalices sin revisar variables de entorno.
-
-**Ejemplo de `package.json`:**
+Abre `package.json` y deja los scripts asi:
 
 ```json
 {
+  "name": "mini-notas-backend",
+  "version": "1.0.0",
+  "description": "API basica para desplegar en Render",
+  "main": "src/server.js",
   "scripts": {
+    "dev": "nodemon src/server.js",
     "start": "node src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
 ```
 
-**Explicacion:**
+Punto clave:
 
-| Elemento | Funcion |
-|---|---|
-| `scripts` | Agrupa comandos del proyecto. |
-| `start` | Comando que Render ejecutara con `npm start`. |
-| `node src/server.js` | Inicia el servidor desde el archivo indicado. |
+- `npm run dev` se usara localmente.
+- `npm start` se usara en Render.
 
-**Actividad para ti:**  
-Revisa tu `package.json` y responde: ¿que archivo inicia tu servidor?
-
-**Espacio para responder:**
-
-- ¿Que es un Web Service?
-- ¿Por que Render necesita un Start Command?
-- ¿Que pasa si `npm start` no existe?
-
-**Resultado esperado:**  
-El backend queda configurado para iniciar en Render.
-
-**Error comun a evitar:**  
-Configurar `npm start` sin tener el script `start` en `package.json`.
-
-**Mini reto:**  
-Propone un Start Command alternativo si tu archivo principal se llama `server.js` en la raiz.
+Render necesita un comando de inicio claro. Si `npm start` no existe, el backend no arrancara correctamente.
 
 ---
 
-## Bloque 6 - Configurar variables del backend y CORS
+## 6. Crear estructura de archivos del backend
 
-**Objetivo del bloque:**  
-Configurar variables necesarias para que el backend funcione en produccion.
-
-**Concepto trabajado:**  
-Variables de entorno backend y CORS.
-
-**Explicacion breve:**  
-El backend necesita variables privadas y de configuracion. Algunas indican modo de ejecucion, otras conectan la base de datos y otras permiten solicitudes desde el frontend.
-
-**Variables recomendadas:**
+Dentro de `mini-notas-backend`, crea esta estructura:
 
 ```text
+mini-notas-backend/
+  src/
+    config/
+      database.js
+    models/
+      Note.js
+    routes/
+      note.routes.js
+    server.js
+  .env
+  .env.example
+  .gitignore
+  package.json
+```
+
+Puedes crear carpetas desde terminal:
+
+```bash
+mkdir -p src/config src/models src/routes
+```
+
+En Windows PowerShell, si `mkdir -p` no funciona, crea las carpetas manualmente desde VS Code.
+
+---
+
+## 7. Crear archivo .gitignore del backend
+
+Crea `.gitignore`:
+
+```gitignore
+node_modules
+.env
+.DS_Store
+```
+
+Explicacion:
+
+- `node_modules` no se sube a GitHub.
+- `.env` no se sube porque contiene variables privadas.
+- `.env.example` si se puede subir porque solo muestra la plantilla.
+
+---
+
+## 8. Crear archivo .env.example del backend
+
+Crea `.env.example`:
+
+```bash
 PORT=5000
-NODE_ENV=production
-MONGODB_URI=mongodb+srv://admin_app:PasswordSeguro@cluster0.abc123.mongodb.net/mi_base_datos?retryWrites=true&w=majority
-FRONTEND_URL=https://mi-frontend.vercel.app
+NODE_ENV=development
+MONGODB_URI=mongodb+srv://usuario:password@cluster.mongodb.net/mini_notas_cloud?retryWrites=true&w=majority
+FRONTEND_URL=http://localhost:5173
 ```
 
-**Ejemplo de servidor Express con CORS:**
+Luego crea `.env` copiando el mismo contenido:
 
-```javascript
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
-
-const app = express();
-
-app.use(cors({
-  origin: process.env.FRONTEND_URL
-}));
-
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.json({ mensaje: 'API funcionando' });
-});
-
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Servidor ejecutandose en puerto ${PORT}`);
-});
+```bash
+PORT=5000
+NODE_ENV=development
+MONGODB_URI=pegar_aqui_tu_connection_string_real
+FRONTEND_URL=http://localhost:5173
 ```
 
-**Explicacion linea por linea:**
-
-| Linea o bloque | Que hace |
-|---|---|
-| `require('express')` | Importa Express para crear el servidor. |
-| `require('cors')` | Importa CORS para controlar origenes permitidos. |
-| `require('dotenv').config()` | Permite leer variables desde `.env` en desarrollo local. |
-| `const app = express()` | Crea la aplicacion Express. |
-| `origin: process.env.FRONTEND_URL` | Permite solicitudes desde la URL del frontend. |
-| `app.use(express.json())` | Permite recibir JSON en las solicitudes. |
-| `app.get('/')` | Define una ruta de prueba. |
-| `process.env.PORT || 5000` | Usa el puerto del entorno o 5000 por defecto. |
-| `app.listen(...)` | Inicia el servidor. |
-
-**Paso a paso:**
-
-1. En Render, entra al Web Service del backend.
-2. Abre **Environment** o **Environment Variables**.
-3. Agrega `NODE_ENV` con valor `production`.
-4. Agrega `FRONTEND_URL` con la URL de Vercel.
-5. Agrega `MONGODB_URI` cuando tengas la cadena de Atlas.
-6. Guarda los cambios.
-7. Ejecuta un nuevo despliegue si corresponde.
-8. Revisa los logs.
-
-**Actividad para ti:**  
-Explica que error ocurriria si `FRONTEND_URL` apunta a una URL incorrecta.
-
-**Espacio para responder:**
-
-- ¿Para que sirve CORS?
-- ¿Por que `MONGODB_URI` no debe subirse a GitHub?
-- ¿Que variable permite controlar el origen del frontend?
-
-**Resultado esperado:**  
-El backend acepta solicitudes desde el frontend correcto y conserva secretos fuera del codigo.
-
-**Error comun a evitar:**  
-Usar un nombre de variable distinto entre Render y el codigo. Por ejemplo, configurar `MONGO_URI` pero leer `process.env.MONGODB_URI`.
-
-**Mini reto:**  
-Indica que variables son publicas y cuales deben tratarse como privadas.
+Por ahora `MONGODB_URI` quedara pendiente hasta crear MongoDB Atlas.
 
 ---
 
-## Bloque 7 - Configurar MongoDB Atlas y conectar con Mongoose
+## 9. Crear conexion a MongoDB
 
-**Objetivo del bloque:**  
-Crear la base de datos cloud y conectar el backend usando `MONGODB_URI`.
+Archivo: `src/config/database.js`
 
-**Concepto trabajado:**  
-MongoDB Atlas, connection string y Mongoose.
-
-**Explicacion breve:**  
-MongoDB Atlas permite usar MongoDB en la nube. El backend se conecta usando una cadena llamada connection string. Esa cadena se guarda en `MONGODB_URI` dentro del entorno del backend.
-
-**Paso a paso en Atlas:**
-
-1. Ingresa a https://www.mongodb.com/atlas.
-2. Crea o abre tu proyecto.
-3. Crea un cluster gratuito o el tipo inicial disponible para practica.
-4. Crea un usuario de base de datos.
-5. Genera una contraseña segura y guardala.
-6. Otorga permisos de lectura y escritura para la base de datos de practica.
-7. Configura acceso de red.
-8. Para desarrollo, puedes permitir temporalmente `0.0.0.0/0` si la practica lo requiere.
-9. Para produccion, limita el acceso a direcciones necesarias.
-10. Abre **Connect** y selecciona conexion para aplicacion.
-11. Copia el connection string.
-12. Reemplaza la contraseña y agrega el nombre de la base de datos.
-
-**Ejemplo de connection string:**
-
-```text
-mongodb+srv://admin_app:PasswordSeguro@cluster0.abc123.mongodb.net/mi_base_datos?retryWrites=true&w=majority
-```
-
-**Codigo de conexion:**
-
-```javascript
+```js
 const mongoose = require('mongoose');
 
 const conectarDB = async () => {
   try {
+    if (!process.env.MONGODB_URI) {
+      throw new Error('Falta configurar MONGODB_URI');
+    }
+
     await mongoose.connect(process.env.MONGODB_URI);
-    console.log('MongoDB conectado exitosamente');
+    console.log('MongoDB conectado correctamente');
   } catch (error) {
-    console.error('Error al conectar MongoDB:', error.message);
+    console.error('Error al conectar con MongoDB:', error.message);
     process.exit(1);
   }
 };
@@ -540,322 +272,1187 @@ const conectarDB = async () => {
 module.exports = conectarDB;
 ```
 
-**Explicacion linea por linea:**
+Que hace este archivo:
 
-| Linea | Que hace |
-|---|---|
-| `const mongoose = require('mongoose')` | Importa Mongoose para conectar Node.js con MongoDB. |
-| `const conectarDB = async () =>` | Declara una funcion asincrona de conexion. |
-| `try` | Intenta ejecutar la conexion. |
-| `mongoose.connect(process.env.MONGODB_URI)` | Usa la variable de entorno con la URI de Atlas. |
-| `console.log(...)` | Muestra confirmacion si la conexion funciona. |
-| `catch (error)` | Captura errores de conexion. |
-| `console.error(...)` | Muestra el problema en los logs. |
-| `process.exit(1)` | Detiene el proceso si la base de datos no conecta. |
-| `module.exports = conectarDB` | Exporta la funcion para usarla en el servidor. |
-
-**Uso en `server.js`:**
-
-```javascript
-const conectarDB = require('./src/config/database');
-
-conectarDB();
-```
-
-**Paso a paso:**
-
-1. Crea el archivo `src/config/database.js`.
-2. Copia el codigo de conexion.
-3. Importa `conectarDB` en `server.js`.
-4. Ejecuta `conectarDB()` antes de iniciar o antes de montar rutas segun tu estructura.
-5. Configura `MONGODB_URI` en Render.
-6. Despliega nuevamente.
-7. Revisa logs.
-
-**Actividad para ti:**  
-Indica tres causas posibles de error al conectar con MongoDB Atlas.
-
-**Espacio para responder:**
-
-- ¿Que es el connection string?
-- ¿Por que se guarda en `MONGODB_URI`?
-- ¿Que mensaje esperas ver en los logs si la conexion funciona?
-
-**Resultado esperado:**  
-El backend muestra `MongoDB conectado exitosamente` en los logs.
-
-**Error comun a evitar:**  
-Dejar `<password>` sin reemplazar en el connection string.
-
-**Mini reto:**  
-Explica por que el usuario de base de datos no es lo mismo que tu cuenta personal de MongoDB Atlas.
+- Lee `process.env.MONGODB_URI`.
+- Intenta conectar con MongoDB Atlas.
+- Si conecta, muestra mensaje de exito.
+- Si falla, detiene el servidor.
 
 ---
 
-## Bloque 8 - Introduccion a CI/CD con GitHub Actions
+## 10. Crear modelo de nota
 
-**Objetivo del bloque:**  
-Comprender como automatizar una validacion basica del proyecto.
+Archivo: `src/models/Note.js`
 
-**Concepto trabajado:**  
-CI/CD y workflows YAML.
+```js
+const mongoose = require('mongoose');
 
-**Explicacion breve:**  
-CI significa integracion continua. Sirve para verificar cambios con frecuencia. CD significa despliegue continuo. Sirve para publicar cambios verificados. GitHub Actions permite automatizar tareas cuando ocurre un evento en el repositorio.
+const noteSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 80
+    },
+    content: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 300
+    }
+  },
+  {
+    timestamps: true
+  }
+);
 
-**Ejemplo guiado:**
+module.exports = mongoose.model('Note', noteSchema);
+```
+
+Este modelo indica que cada nota tendra:
+
+- `title`: titulo obligatorio.
+- `content`: contenido obligatorio.
+- `createdAt` y `updatedAt`: generados automaticamente por `timestamps`.
+
+---
+
+## 11. Crear rutas de notas
+
+Archivo: `src/routes/note.routes.js`
+
+```js
+const express = require('express');
+const Note = require('../models/Note');
+
+const router = express.Router();
+
+router.get('/', async (req, res) => {
+  const notes = await Note.find().sort({ createdAt: -1 });
+  res.json(notes);
+});
+
+router.post('/', async (req, res) => {
+  const { title, content } = req.body;
+
+  if (!title || !content) {
+    return res.status(400).json({
+      message: 'title y content son obligatorios'
+    });
+  }
+
+  const note = await Note.create({ title, content });
+  res.status(201).json(note);
+});
+
+module.exports = router;
+```
+
+Rutas creadas:
+
+| Metodo | Ruta | Funcion |
+|---|---|---|
+| GET | /api/notes | Lista todas las notas |
+| POST | /api/notes | Crea una nueva nota |
+
+---
+
+## 12. Crear servidor Express
+
+Archivo: `src/server.js`
+
+```js
+require('dotenv').config();
+
+const express = require('express');
+const cors = require('cors');
+const conectarDB = require('./config/database');
+const noteRoutes = require('./routes/note.routes');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error('Origen no permitido por CORS'));
+  }
+}));
+
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.json({
+    message: 'API Mini Notas funcionando',
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+app.use('/api/notes', noteRoutes);
+
+conectarDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Servidor iniciado en puerto ${PORT}`);
+  });
+});
+```
+
+Que hace este archivo:
+
+- Carga variables de entorno.
+- Configura CORS.
+- Activa lectura de JSON.
+- Crea una ruta base `/`.
+- Conecta las rutas `/api/notes`.
+- Conecta MongoDB antes de iniciar el servidor.
+
+---
+
+# PARTE B - Crear MongoDB Atlas
+
+## 13. Crear cuenta y proyecto en MongoDB Atlas
+
+Pasos:
+
+1. Ingresa a MongoDB Atlas.
+2. Crea cuenta o inicia sesion.
+3. Crea un nuevo proyecto, por ejemplo:
+
+```text
+mini-notas-cloud
+```
+
+4. Crea un cluster gratuito si esta disponible.
+
+La interfaz puede mostrar opciones como **Free** o **Flex**. Lo importante para esta practica es seleccionar una opcion gratuita o de desarrollo.
+
+---
+
+## 14. Crear cluster
+
+En Atlas:
+
+1. Selecciona **Create** o **Build a Database**.
+2. Elige una opcion gratuita o de aprendizaje.
+3. Selecciona proveedor y region.
+4. Deja un nombre como:
+
+```text
+Cluster0
+```
+
+5. Crea el cluster.
+
+Espera a que Atlas termine la creacion.
+
+---
+
+## 15. Crear usuario de base de datos
+
+En Atlas, crea un usuario para la aplicacion:
+
+```text
+Username: admin_app
+Password: genera_una_password_segura
+```
+
+Importante:
+
+- Este usuario no es tu usuario de inicio de sesion en Atlas.
+- Es el usuario que usara el backend para conectarse.
+- Guarda la contrasena en un lugar seguro.
+- No la subas a GitHub.
+
+---
+
+## 16. Configurar acceso de red
+
+En Atlas, ve a **Network Access**.
+
+Para desarrollo puedes agregar:
+
+```text
+0.0.0.0/0
+```
+
+Significa que se permite conexion desde cualquier IP.
+
+Advertencia academica:
+
+- Es util para practicar porque Render puede usar IP variable.
+- En produccion real se debe restringir el acceso todo lo posible.
+
+---
+
+## 17. Obtener connection string
+
+En el cluster:
+
+1. Clic en **Connect**.
+2. Selecciona **Drivers** o **Connect your application**.
+3. Selecciona Node.js.
+4. Copia una cadena parecida a esta:
+
+```text
+mongodb+srv://admin_app:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
+```
+
+Ahora debes editarla:
+
+1. Reemplaza `<password>` por tu password real.
+2. Agrega el nombre de la base de datos despues de `.net/`.
+
+Ejemplo final:
+
+```text
+mongodb+srv://admin_app:TuPasswordReal@cluster0.xxxxx.mongodb.net/mini_notas_cloud?retryWrites=true&w=majority
+```
+
+Si tu password tiene caracteres especiales, Atlas puede pedir codificarlos. Para evitar problemas en clase, usa una contrasena segura pero simple para practica, por ejemplo con letras y numeros.
+
+---
+
+## 18. Pegar connection string en .env local
+
+En `mini-notas-backend/.env`:
+
+```bash
+PORT=5000
+NODE_ENV=development
+MONGODB_URI=mongodb+srv://admin_app:TuPasswordReal@cluster0.xxxxx.mongodb.net/mini_notas_cloud?retryWrites=true&w=majority
+FRONTEND_URL=http://localhost:5173
+```
+
+Guarda el archivo.
+
+---
+
+## 19. Probar backend local
+
+En la terminal, dentro de `mini-notas-backend`:
+
+```bash
+npm run dev
+```
+
+Resultado esperado:
+
+```text
+MongoDB conectado correctamente
+Servidor iniciado en puerto 5000
+```
+
+Abre en navegador:
+
+```text
+http://localhost:5000/
+```
+
+Debe responder algo como:
+
+```json
+{
+  "message": "API Mini Notas funcionando",
+  "environment": "development"
+}
+```
+
+Prueba listar notas:
+
+```text
+http://localhost:5000/api/notes
+```
+
+Al inicio debe responder:
+
+```json
+[]
+```
+
+---
+
+## 20. Probar crear una nota
+
+Puedes usar Thunder Client, Postman o curl.
+
+Ejemplo con curl:
+
+```bash
+curl -X POST http://localhost:5000/api/notes \
+  -H "Content-Type: application/json" \
+  -d "{\"title\":\"Primera nota\",\"content\":\"Probando MongoDB Atlas\"}"
+```
+
+En Windows PowerShell, puedes usar:
+
+```powershell
+Invoke-RestMethod `
+  -Uri "http://localhost:5000/api/notes" `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body '{"title":"Primera nota","content":"Probando MongoDB Atlas"}'
+```
+
+Luego vuelve a abrir:
+
+```text
+http://localhost:5000/api/notes
+```
+
+Debe aparecer la nota creada.
+
+---
+
+# PARTE C - Crear frontend desde cero
+
+## 21. Crear proyecto React con Vite
+
+Vuelve a la carpeta principal:
+
+```bash
+cd ..
+```
+
+Crea frontend:
+
+```bash
+npm create vite@latest mini-notas-frontend -- --template react
+cd mini-notas-frontend
+npm install
+```
+
+Ejecuta:
+
+```bash
+npm run dev
+```
+
+Abre la URL local que indique Vite, normalmente:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## 22. Crear variable local del frontend
+
+En `mini-notas-frontend`, crea `.env`:
+
+```bash
+VITE_API_URL=http://localhost:5000
+```
+
+Crea tambien `.env.example`:
+
+```bash
+VITE_API_URL=http://localhost:5000
+```
+
+Crea `.gitignore` o verifica que exista:
+
+```gitignore
+node_modules
+dist
+.env
+.DS_Store
+```
+
+Regla importante:
+
+- En Vite, las variables que el frontend puede leer deben iniciar con `VITE_`.
+- Por eso usamos `VITE_API_URL`.
+- No coloques `MONGODB_URI` en el frontend.
+
+---
+
+## 23. Reemplazar App.jsx
+
+Archivo: `src/App.jsx`
+
+```jsx
+import { useEffect, useState } from 'react';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+export default function App() {
+  const [notes, setNotes] = useState([]);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [message, setMessage] = useState('');
+
+  const loadNotes = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/notes`);
+      const data = await response.json();
+      setNotes(data);
+      setMessage('Notas cargadas correctamente');
+    } catch (error) {
+      setMessage('No se pudo conectar con el backend');
+    }
+  };
+
+  const createNote = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch(`${API_URL}/api/notes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title, content })
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al crear nota');
+      }
+
+      setTitle('');
+      setContent('');
+      await loadNotes();
+      setMessage('Nota creada correctamente');
+    } catch (error) {
+      setMessage('Error al guardar la nota');
+    }
+  };
+
+  useEffect(() => {
+    loadNotes();
+  }, []);
+
+  return (
+    <main className="container">
+      <section className="hero">
+        <p className="tag">Vercel + Render + MongoDB Atlas</p>
+        <h1>Mini Notas Cloud</h1>
+        <p>
+          Proyecto basico para practicar despliegue de frontend,
+          backend y base de datos en la nube.
+        </p>
+      </section>
+
+      <section className="card">
+        <h2>Nueva nota</h2>
+        <form onSubmit={createNote}>
+          <input
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+            placeholder="Titulo de la nota"
+          />
+          <textarea
+            value={content}
+            onChange={(event) => setContent(event.target.value)}
+            placeholder="Contenido de la nota"
+          />
+          <button type="submit">Guardar nota</button>
+        </form>
+        <p className="message">{message}</p>
+      </section>
+
+      <section className="card">
+        <h2>Notas guardadas</h2>
+        <div className="list">
+          {notes.map((note) => (
+            <article className="note" key={note._id}>
+              <h3>{note.title}</h3>
+              <p>{note.content}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    </main>
+  );
+}
+```
+
+---
+
+## 24. Reemplazar style.css
+
+Archivo: `src/style.css`
+
+```css
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #e5e7eb;
+  background: #0f172a;
+}
+
+.container {
+  width: min(900px, 92%);
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+.hero {
+  margin-bottom: 24px;
+}
+
+.tag {
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+h1 {
+  margin: 0;
+  font-size: 42px;
+}
+
+.card {
+  padding: 24px;
+  margin-top: 20px;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  background: #111827;
+}
+
+form {
+  display: grid;
+  gap: 12px;
+}
+
+input,
+textarea,
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+  font-size: 16px;
+}
+
+textarea {
+  min-height: 110px;
+}
+
+button {
+  border: none;
+  color: #0f172a;
+  background: #38bdf8;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.message {
+  color: #fbbf24;
+}
+
+.list {
+  display: grid;
+  gap: 12px;
+}
+
+.note {
+  padding: 16px;
+  border-radius: 12px;
+  background: #1f2937;
+}
+
+.note h3 {
+  margin-top: 0;
+}
+```
+
+---
+
+## 25. Verificar main.jsx
+
+Archivo: `src/main.jsx`
+
+```jsx
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.jsx';
+import './style.css';
+
+createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+
+---
+
+## 26. Probar frontend con backend local
+
+Abre dos terminales:
+
+Terminal 1 - backend:
+
+```bash
+cd mini-notas-backend
+npm run dev
+```
+
+Terminal 2 - frontend:
+
+```bash
+cd mini-notas-frontend
+npm run dev
+```
+
+Abre:
+
+```text
+http://localhost:5173
+```
+
+Prueba:
+
+1. Escribe un titulo.
+2. Escribe un contenido.
+3. Clic en **Guardar nota**.
+4. Verifica que la nota aparezca en la lista.
+5. Recarga la pagina.
+6. La nota debe seguir ahi porque viene de MongoDB Atlas.
+
+Si esto funciona, ya tienes el proyecto listo para desplegar.
+
+---
+
+# PARTE D - Subir backend a GitHub
+
+## 27. Crear repositorio backend
+
+En GitHub:
+
+1. Crea repositorio nuevo.
+2. Nombre sugerido:
+
+```text
+mini-notas-backend
+```
+
+3. No agregues README desde GitHub si ya tienes archivos locales.
+
+Desde terminal en `mini-notas-backend`:
+
+```bash
+git init
+git add .
+git commit -m "backend inicial mini notas"
+git branch -M main
+git remote add origin https://github.com/TU_USUARIO/mini-notas-backend.git
+git push -u origin main
+```
+
+Verifica en GitHub que subieron los archivos.
+
+No debe subir `.env`.
+
+---
+
+# PARTE E - Desplegar backend en Render
+
+## 28. Crear Web Service en Render
+
+En Render:
+
+1. Inicia sesion.
+2. Clic en **New**.
+3. Selecciona **Web Service**.
+4. Conecta tu cuenta de GitHub.
+5. Selecciona el repositorio:
+
+```text
+mini-notas-backend
+```
+
+Configura:
+
+| Campo | Valor recomendado |
+|---|---|
+| Name | mini-notas-backend |
+| Runtime | Node |
+| Branch | main |
+| Build Command | npm install |
+| Start Command | npm start |
+| Plan | Free o el disponible para practica |
+
+---
+
+## 29. Configurar variables en Render
+
+En la seccion **Environment Variables**, agrega:
+
+```bash
+NODE_ENV=production
+MONGODB_URI=tu_connection_string_de_mongodb_atlas
+FRONTEND_URL=http://localhost:5173
+```
+
+Notas importantes:
+
+- `MONGODB_URI` debe ser la cadena real de MongoDB Atlas.
+- `FRONTEND_URL` se actualizara despues con la URL real de Vercel.
+- No agregues `VITE_API_URL` en Render; esa variable pertenece al frontend.
+
+---
+
+## 30. Crear servicio y probar backend en Render
+
+Clic en **Create Web Service**.
+
+Render empezara a:
+
+1. Clonar repositorio.
+2. Instalar dependencias.
+3. Ejecutar `npm start`.
+4. Levantar el servidor.
+
+Cuando termine, obtendras una URL parecida a:
+
+```text
+https://mini-notas-backend.onrender.com
+```
+
+Abre:
+
+```text
+https://mini-notas-backend.onrender.com/
+```
+
+Resultado esperado:
+
+```json
+{
+  "message": "API Mini Notas funcionando",
+  "environment": "production"
+}
+```
+
+Luego prueba:
+
+```text
+https://mini-notas-backend.onrender.com/api/notes
+```
+
+Debe devolver un arreglo de notas.
+
+Nota operativa:
+
+- En plan gratuito, Render puede suspender el servicio despues de un tiempo sin trafico.
+- Si demora en responder, espera cerca de un minuto y vuelve a probar.
+
+---
+
+# PARTE F - Subir frontend a GitHub
+
+## 31. Crear repositorio frontend
+
+En GitHub:
+
+1. Crea repositorio nuevo.
+2. Nombre sugerido:
+
+```text
+mini-notas-frontend
+```
+
+Desde terminal en `mini-notas-frontend`:
+
+```bash
+git init
+git add .
+git commit -m "frontend inicial mini notas"
+git branch -M main
+git remote add origin https://github.com/TU_USUARIO/mini-notas-frontend.git
+git push -u origin main
+```
+
+Verifica que `.env` no haya subido.
+
+---
+
+# PARTE G - Desplegar frontend en Vercel
+
+## 32. Importar proyecto en Vercel
+
+En Vercel:
+
+1. Inicia sesion con GitHub.
+2. Clic en **Add New**.
+3. Selecciona **Project**.
+4. Importa el repositorio:
+
+```text
+mini-notas-frontend
+```
+
+Vercel deberia detectar Vite.
+
+Verifica:
+
+| Campo | Valor |
+|---|---|
+| Framework Preset | Vite |
+| Install Command | npm install |
+| Build Command | npm run build |
+| Output Directory | dist |
+
+---
+
+## 33. Configurar variable VITE_API_URL en Vercel
+
+Antes de desplegar, agrega Environment Variable:
+
+```bash
+VITE_API_URL=https://mini-notas-backend.onrender.com
+```
+
+Reemplaza la URL con la URL real de tu backend en Render.
+
+Importante:
+
+- En Vite, debe iniciar con `VITE_`.
+- `VITE_API_URL` apunta al backend.
+- No agregues `MONGODB_URI` en Vercel.
+
+---
+
+## 34. Desplegar frontend
+
+Clic en **Deploy**.
+
+Vercel ejecutara:
+
+1. `npm install`.
+2. `npm run build`.
+3. Publicacion en una URL publica.
+
+Obtendras una URL parecida a:
+
+```text
+https://mini-notas-frontend.vercel.app
+```
+
+Abre la URL.
+
+Es probable que la interfaz cargue, pero todavia debas corregir CORS en Render.
+
+---
+
+# PARTE H - Conectar Render con Vercel correctamente
+
+## 35. Actualizar FRONTEND_URL en Render
+
+Cuando ya tengas la URL real de Vercel, vuelve a Render.
+
+En tu servicio backend:
+
+1. Entra a **Environment Variables**.
+2. Edita:
+
+```bash
+FRONTEND_URL=https://mini-notas-frontend.vercel.app
+```
+
+3. Guarda cambios.
+4. Ejecuta redeploy o reinicia el servicio.
+
+Esto permite que el backend acepte peticiones desde el dominio real del frontend.
+
+---
+
+## 36. Si cambias VITE_API_URL en Vercel, redeploy
+
+Si te equivocaste en `VITE_API_URL`:
+
+1. Ve a Vercel.
+2. Entra al proyecto frontend.
+3. Abre **Settings**.
+4. Entra a **Environment Variables**.
+5. Corrige `VITE_API_URL`.
+6. Guarda.
+7. Ejecuta un nuevo deployment.
+
+Nota operativa:
+
+- Los cambios de variables en Vercel no se aplican a despliegues anteriores.
+- Debes hacer redeploy para que el frontend compile con el nuevo valor.
+
+---
+
+# PARTE I - Validacion final del proyecto
+
+## 37. Checklist de validacion tecnica
+
+Completa esta tabla:
+
+| Validacion | Resultado esperado | Cumple |
+|---|---|---|
+| Backend local responde | http://localhost:5000/ muestra JSON |  |
+| Backend conecta con Atlas | Log: MongoDB conectado correctamente |  |
+| POST crea nota | La nota aparece en /api/notes |  |
+| Frontend local carga | http://localhost:5173 abre app |  |
+| Frontend local crea nota | Se guarda en MongoDB |  |
+| Backend Render responde | URL onrender.com muestra JSON |  |
+| Frontend Vercel carga | URL vercel.app abre app |  |
+| Vercel consume Render | La app lista notas desde backend cloud |  |
+| CORS correcto | No hay error CORS en consola |  |
+| Variables correctas | VITE_API_URL y MONGODB_URI estan bien ubicadas |  |
+
+---
+
+## 38. Errores comunes y solucion
+
+| Error | Causa probable | Solucion |
+|---|---|---|
+| Frontend carga pero no muestra notas | VITE_API_URL incorrecta | Corregir variable en Vercel y redeploy |
+| Error CORS en navegador | FRONTEND_URL incorrecta en Render | Colocar URL real de Vercel en Render |
+| Backend no arranca en Render | Start Command incorrecto | Usar `npm start` y revisar package.json |
+| MongoDB no conecta | MONGODB_URI incorrecto | Revisar usuario, password y nombre de BD |
+| Deploy exitoso pero app falla | Falta validar integracion | Revisar consola, Network y logs |
+| Render demora en responder | Servicio gratuito dormido | Esperar cerca de un minuto y reintentar |
+| Variable existe pero no aplica | No se hizo redeploy | Ejecutar nuevo deployment |
+
+---
+
+# PARTE J - Evidencia que debe entregar el estudiante
+
+El estudiante debe entregar:
+
+1. URL del repositorio backend en GitHub.
+2. URL del repositorio frontend en GitHub.
+3. URL del backend desplegado en Render.
+4. URL del frontend desplegado en Vercel.
+5. Captura de MongoDB Atlas mostrando coleccion con datos.
+6. Captura de variables configuradas sin mostrar secretos completos.
+7. Captura de la app creando una nota.
+8. README con instrucciones.
+9. Video corto explicando el despliegue y los errores corregidos.
+
+---
+
+## 39. README sugerido para el frontend
+
+````md
+# Mini Notas Cloud - Frontend
+
+Frontend construido con React y Vite.
+
+## Variables
+
+```bash
+VITE_API_URL=https://mi-backend.onrender.com
+```
+
+## Scripts
+
+```bash
+npm install
+npm run dev
+npm run build
+```
+
+## Despliegue
+
+Publicado en Vercel.
+````
+
+---
+
+## 40. README sugerido para el backend
+
+````md
+# Mini Notas Cloud - Backend
+
+API construida con Node.js, Express y MongoDB Atlas.
+
+## Variables
+
+```bash
+NODE_ENV=production
+MONGODB_URI=connection_string_privado
+FRONTEND_URL=https://mi-frontend.vercel.app
+```
+
+## Scripts
+
+```bash
+npm install
+npm run dev
+npm start
+```
+
+## Rutas
+
+- GET /
+- GET /api/notes
+- POST /api/notes
+
+## Despliegue
+
+Publicado en Render.
+````
+
+---
+
+# PARTE K - GitHub Actions opcional
+
+## 41. Workflow basico para frontend
+
+Crea archivo:
+
+```text
+.github/workflows/frontend-check.yml
+```
+
+Contenido:
 
 ```yaml
-name: Ejecutar Tests
+name: Frontend Check
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Clonar repositorio
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24.x'
+          node-version: lts/*
 
       - name: Instalar dependencias
         run: npm install
 
-      - name: Ejecutar tests
-        run: npm test
+      - name: Construir proyecto
+        run: npm run build
 ```
 
-**Explicacion por bloque:**
-
-| Seccion | Funcion |
-|---|---|
-| `name` | Nombre visible del workflow. |
-| `on` | Eventos que activan el workflow. |
-| `push` | Ejecuta el flujo cuando se sube codigo. |
-| `pull_request` | Ejecuta el flujo cuando se abre o actualiza un pull request. |
-| `jobs` | Agrupa las tareas. |
-| `runs-on` | Define el sistema donde corre el job. |
-| `steps` | Pasos individuales del job. |
-| `npm install` | Instala dependencias. |
-| `npm test` | Ejecuta las pruebas del proyecto. |
-
-**Paso a paso:**
-
-1. En tu repositorio, crea la carpeta `.github/workflows`.
-2. Dentro, crea el archivo `tests.yml`.
-3. Copia el workflow.
-4. Haz commit y push.
-5. Abre la pestana **Actions** en GitHub.
-6. Verifica si el workflow se ejecuto correctamente.
-
-**Actividad para ti:**  
-Identifica que parte del YAML responde a cada pregunta:
-
-| Pregunta | Respuesta |
-|---|---|
-| ¿Cuando se ejecuta? | |
-| ¿Donde se ejecuta? | |
-| ¿Que comandos ejecuta? | |
-
-**Espacio para responder:**
-
-- ¿Que significa CI?
-- ¿Que significa CD?
-- ¿Por que conviene ejecutar tests antes de desplegar?
-
-**Resultado esperado:**  
-GitHub Actions ejecuta el workflow al hacer push o pull request.
-
-**Error comun a evitar:**  
-Crear el archivo YAML fuera de `.github/workflows`.
-
-**Mini reto:**  
-Explica que pasaria si el proyecto no tiene configurado el script `test`.
+Este workflow valida que el frontend pueda construirse correctamente.
 
 ---
 
-# Actividades guiadas progresivas
+## 42. Workflow basico para backend
 
-## Actividad 1 - Reconocimiento
-
-**Titulo:** Identificar componentes del despliegue cloud.  
-**Objetivo:** Reconocer que plataforma corresponde a cada pieza.
-
-**Instrucciones:** Completa la tabla.
-
-| Pieza | Plataforma | Variable relacionada |
-|---|---|---|
-| Frontend | | |
-| Backend | | |
-| Base de datos | | |
-| Automatizacion | | |
-
-**Que observar:** La aplicacion no es una sola pieza.  
-**Que responder:** Explica el rol de cada plataforma.  
-**Resultado esperado:** Mapa correcto de componentes.  
-**Criterio de validacion rapida:** Identificas Vercel, Render, MongoDB Atlas y GitHub Actions.
-
----
-
-## Actividad 2 - Replica guiada
-
-**Titulo:** Preparar despliegue frontend en Vercel.  
-**Objetivo:** Simular la configuracion necesaria antes del deploy.
-
-**Instrucciones:** Escribe los valores que usarias.
-
-| Configuracion | Valor |
-|---|---|
-| Framework | |
-| Build Command | |
-| Output Directory | |
-| Variable frontend | |
-| Valor de la variable | |
-
-**Codigo base o caso:** Proyecto React/Vite en GitHub.  
-**Que modificar:** Agregar `VITE_API_URL`.  
-**Que observar:** La URL del backend debe ser publica.  
-**Que responder:** ¿Que pasa si usas `localhost` en produccion?  
-**Resultado esperado:** Configuracion lista para desplegar.  
-**Criterio de validacion rapida:** `VITE_API_URL` existe y apunta al backend.
-
----
-
-## Actividad 3 - Modificacion controlada
-
-**Titulo:** Ajustar backend para CORS.  
-**Objetivo:** Usar `FRONTEND_URL` para permitir solicitudes desde Vercel.
-
-**Codigo base:**
-
-```javascript
-app.use(cors());
-```
-
-**Que modificar:** Cambiarlo por:
-
-```javascript
-app.use(cors({
-  origin: process.env.FRONTEND_URL
-}));
-```
-
-**Que observar:** El backend queda configurado para aceptar el origen del frontend.  
-**Que responder:** ¿Por que conviene no dejar CORS completamente abierto en produccion?  
-**Resultado esperado:** CORS depende de `FRONTEND_URL`.  
-**Criterio de validacion rapida:** El codigo lee `process.env.FRONTEND_URL`.
-
----
-
-## Actividad 4 - Aplicacion
-
-**Titulo:** Preparar `MONGODB_URI`.  
-**Objetivo:** Transformar un connection string de Atlas en una variable de Render.
-
-**Codigo base o caso:**
+Crea archivo:
 
 ```text
-mongodb+srv://admin_app:<password>@cluster0.abc123.mongodb.net/?retryWrites=true&w=majority
+.github/workflows/backend-check.yml
 ```
 
-**Que modificar:**
+Contenido:
 
-1. Reemplazar `<password>`.
-2. Agregar el nombre de base de datos.
-3. Guardar como `MONGODB_URI` en Render.
+```yaml
+name: Backend Check
 
-**Resultado esperado:**
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Instalar dependencias
+        run: npm install
+```
+
+Este workflow no prueba conexion real a MongoDB porque no hemos configurado secrets para CI. Para esta clase basta como validacion inicial.
+
+---
+
+# PARTE L - Resumen final de aprendizaje
+
+Al terminar esta guia, debes poder explicar:
+
+1. Por que el frontend se despliega en Vercel.
+2. Por que el backend se despliega en Render.
+3. Por que MongoDB Atlas se usa como base de datos cloud.
+4. Para que sirve `VITE_API_URL`.
+5. Para que sirve `MONGODB_URI`.
+6. Para que sirve `FRONTEND_URL`.
+7. Por que no se sube `.env` a GitHub.
+8. Por que se debe hacer redeploy al cambiar variables en Vercel.
+9. Como leer errores basicos en Render Logs.
+10. Como validar si la aplicacion completa funciona.
+
+---
+
+## 43. Rubrica rapida de revision sobre 20
+
+| Criterio | Puntaje |
+|---|---:|
+| Backend local funcional y conectado a Atlas | 4 |
+| Frontend local consume backend | 3 |
+| Backend desplegado correctamente en Render | 3 |
+| Frontend desplegado correctamente en Vercel | 3 |
+| Variables de entorno bien ubicadas | 3 |
+| Evidencias, README y video explicativo | 3 |
+| Buenas practicas: no exponer secretos, revisar logs | 1 |
+| Total | 20 |
+
+---
+
+## 44. Nota tecnica operativa
+
+Las plataformas pueden cambiar visualmente. Si un boton cambia de nombre, no memorices la pantalla: busca el flujo equivalente.
+
+Flujo estable:
 
 ```text
-mongodb+srv://admin_app:PasswordSeguro@cluster0.abc123.mongodb.net/mi_base_datos?retryWrites=true&w=majority
+GitHub -> Vercel -> Render -> MongoDB Atlas
 ```
 
-**Que observar:** No se pega la URI en el frontend.  
-**Que responder:** ¿Que error ocurre si no reemplazas `<password>`?  
-**Criterio de validacion rapida:** La URI tiene usuario, password, host y nombre de base de datos.
+Variables clave:
+
+```text
+Frontend: VITE_API_URL
+Backend: MONGODB_URI, FRONTEND_URL, NODE_ENV
+```
+
+Validacion clave:
+
+```text
+URL frontend carga
+URL backend responde
+MongoDB guarda datos
+No hay error CORS
+```
 
 ---
 
-## Actividad 5 - Integracion
+## 45. Referencias tecnicas consultadas
 
-**Titulo:** Validar flujo completo.  
-**Objetivo:** Confirmar que cada pieza se conecta correctamente.
-
-**Instrucciones:** Completa el checklist.
-
-| Validacion | Cumple? | Evidencia |
-|---|---|---|
-| Frontend abre en Vercel | | |
-| Backend responde en Render | | |
-| `VITE_API_URL` apunta a Render | | |
-| `MONGODB_URI` esta en Render | | |
-| Logs muestran conexion a MongoDB | | |
-| Frontend consume datos del backend | | |
-
-**Resultado esperado:** Aplicacion integrada.  
-**Criterio de validacion rapida:** Puedes mostrar URL de frontend, URL de backend y logs de conexion.
-
----
-
-## Actividad 6 - Validacion con preguntas
-
-**Titulo:** Diagnostico de errores frecuentes.  
-**Objetivo:** Resolver problemas mediante razonamiento por capas.
-
-**Caso 1:** El frontend abre, pero no muestra datos.  
-**Pregunta:** ¿Que revisarias primero?
-
-**Caso 2:** Render muestra error de conexion a MongoDB.  
-**Pregunta:** ¿Que revisarías en `MONGODB_URI`?
-
-**Caso 3:** GitHub Actions no se ejecuta.  
-**Pregunta:** ¿Donde debe estar ubicado el archivo YAML?
-
-**Resultado esperado:** Diagnostico por componentes.  
-**Criterio de validacion rapida:** Tus respuestas mencionan variable, plataforma y evidencia.
-
----
-
-# Validacion final
-
-Antes de cerrar la sesion, verifica que puedas responder:
-
-1. ¿Que plataforma publica el frontend?
-2. ¿Que plataforma ejecuta el backend?
-3. ¿Que plataforma almacena los datos?
-4. ¿Que variable conecta el frontend con el backend?
-5. ¿Que variable conecta el backend con MongoDB Atlas?
-6. ¿Que herramienta automatiza tareas desde GitHub?
-7. ¿Por que se revisan logs despues del deploy?
-8. ¿Por que no se deben subir secretos a GitHub?
-
----
-
-# Glosario rapido
-
-| Termino | Definicion |
-|---|---|
-| Deployment | Proceso de publicar una aplicacion en internet. |
-| Frontend | Parte visual que usa el usuario. |
-| Backend | Servidor que procesa solicitudes. |
-| Variable de entorno | Valor de configuracion definido fuera del codigo. |
-| CORS | Mecanismo que controla solicitudes entre dominios. |
-| Connection string | Cadena usada para conectar con una base de datos. |
-| CI | Integracion continua. |
-| CD | Despliegue continuo. |
-| Workflow | Proceso automatizado definido en YAML. |
-
----
-
-# Cierre
-
-El despliegue cloud no consiste solo en presionar un boton. Requiere entender que cada componente tiene una responsabilidad, que las variables conectan los servicios y que la validacion final debe hacerse con evidencias: URL publica, logs, respuesta de API y conexion a la base de datos.
+- Vercel Docs - Environment Variables.
+- Render Docs - Free Web Services.
+- MongoDB Atlas Docs - Free Clusters and Cluster Types.
+- GitHub Docs - Building and testing Node.js with GitHub Actions.
