@@ -1,9 +1,9 @@
 ---
-title: "Guia del estudiante - Seguridad web con Express y React"
-author: "Elaborado por el docente"
-date: "Proyecto academico: Lideratec Academy"
+title: "Guía del estudiante v2 - Clase guiada paso a paso: Seguridad web con Express y React"
+author: "Lideratec Academy"
+date: "Programación Web Avanzada - Tema 15"
 lang: es
-geometry: margin=2cm
+geometry: margin=1.7cm
 fontsize: 10pt
 mainfont: "DejaVu Sans"
 monofont: "DejaVu Sans Mono"
@@ -24,715 +24,1316 @@ header-includes:
 ---
 
 
-# Seguridad y buenas practicas en aplicaciones web con Express y React
+# Guía del estudiante v2 - Clase práctica paso a paso
 
-**Elaborado por el docente**  
-**Proyecto academico:** Lideratec Academy  
-**Blog:** https://lideratecacademy.com/  
-**Canal YouTube:** https://www.youtube.com/@LideratecAcademy
+## Tema de la sesión
 
-## Proposito de la practica
+**Seguridad y buenas prácticas en aplicaciones web con HTTPS, SSL/TLS, protección contra XSS y CSRF, Helmet.js y Lighthouse.**
 
-Esta guia te acompaña paso a paso para comprender y aplicar buenas practicas basicas de seguridad en una aplicacion web moderna. Trabajaras con HTTPS, certificados SSL/TLS, proteccion contra XSS y CSRF, validacion en Express, sanitizacion en React, Helmet.js y auditoria con Lighthouse.
+Esta guía fue recreada para que puedas seguir una clase práctica desde cero. No asume que ya tienes un proyecto creado. Vas a construir una mini aplicación con:
 
-La meta no es memorizar comandos aislados. La meta es entender que una aplicacion web segura se construye por capas: comunicacion cifrada, validacion de datos, renderizado seguro, control de solicitudes sensibles, encabezados HTTP de seguridad y auditoria continua.
+- Backend en **Express**.
+- Frontend en **React con Vite**.
+- Validación de datos con **express-validator**.
+- Sanitización visual con **DOMPurify**.
+- Encabezados de seguridad con **Helmet.js**.
+- Flujo didáctico de **token CSRF**.
+- Revisión final con **Lighthouse**.
 
-## Resultado de aprendizaje observable
+> Nota importante: esta práctica es académica. El objetivo es comprender los conceptos y aplicar una base segura. En producción se deben revisar dependencias, arquitectura, hosting, certificados reales, cookies, dominios y políticas de seguridad.
 
-Al finalizar, podras **aplicar** una checklist inicial de seguridad en una aplicacion Express y React, identificando riesgos de comunicacion, renderizado, solicitudes sensibles, configuracion de encabezados y auditoria con Lighthouse.
+---
 
-## Duracion sugerida
+## Resultado de aprendizaje
 
-- Lectura guiada: 45 a 60 minutos.
-- Practica tecnica: 90 a 120 minutos.
-- Validacion final: 20 minutos.
+Al finalizar la clase podrás construir y explicar una aplicación Express + React que aplica una checklist inicial de seguridad:
 
-## Requisitos previos minimos
+1. Diferencia entre HTTP y HTTPS.
+2. Uso conceptual de certificado SSL/TLS.
+3. Backend Express con Helmet.js.
+4. Validación y limpieza de entradas en Express.
+5. Frontend React que evita renderizar HTML inseguro.
+6. Uso de DOMPurify cuando se necesita mostrar HTML.
+7. Flujo didáctico de token CSRF para solicitudes sensibles.
+8. Auditoría básica con Lighthouse.
 
-| Requisito | Nivel esperado |
-|---|---|
-| JavaScript | Variables, funciones, objetos y modulos basicos |
-| React | Componentes, `useState`, `useEffect` y eventos |
-| Express | Rutas, middlewares y respuestas JSON |
-| Terminal | Ejecutar comandos `npm` |
-| Navegador | Abrir DevTools y revisar resultados |
+---
 
-## Preparacion del entorno
+## Duración sugerida para clase práctica de 2 horas
 
-### Herramientas necesarias
+| Momento | Tiempo | Qué harás |
+|---|---:|---|
+| Preparación del entorno | 10 min | Crear carpetas, backend y frontend |
+| Backend base Express | 20 min | Crear servidor, rutas y Helmet |
+| Validación Express | 20 min | Crear ruta de comentarios segura |
+| Frontend React | 25 min | Crear formulario y conexión con backend |
+| XSS y DOMPurify | 20 min | Probar renderizado seguro y sanitización |
+| CSRF didáctico | 15 min | Obtener token y enviarlo en POST |
+| Lighthouse + cierre | 10 min | Auditar y completar checklist |
 
-| Herramienta | Motivo pedagogico | Enlace oficial | Validacion rapida |
-|---|---|---|---|
-| Node.js | Ejecutar proyectos React y Express | https://nodejs.org/ | `node -v` |
-| npm | Instalar dependencias | Incluido con Node.js | `npm -v` |
-| Express | Crear servidor backend | https://expressjs.com/ | instalar con `npm install express` |
-| React | Construir frontend | https://react.dev/ | proyecto React funcional |
-| DOMPurify | Sanitizar HTML de usuario | https://dompurify.com/ | `npm install dompurify` |
-| express-validator | Validar y limpiar entradas en Express | https://express-validator.github.io/docs/ | `npm install express-validator` |
-| Helmet.js | Configurar encabezados HTTP de seguridad | https://helmetjs.github.io/ | `npm install helmet` |
-| Lighthouse | Auditar buenas practicas web | https://developer.chrome.com/docs/lighthouse | Chrome DevTools o CLI |
-| Let's Encrypt / Certbot | Obtener certificados SSL/TLS en servidores reales | https://letsencrypt.org/ / https://certbot.eff.org/ | depende del servidor |
+---
 
-### Pasos generales de instalacion
+## Requisitos previos
 
-1. Instala Node.js desde su sitio oficial.
-2. Abre una terminal.
-3. Verifica Node y npm:
+Antes de comenzar, verifica que tienes instalado:
 
-~~~bash
+```bash
 node -v
 npm -v
-~~~
+```
 
-4. Crea o abre un proyecto Express y React.
-5. Instala las dependencias necesarias segun el bloque que vayas a practicar:
+Versiones recomendadas:
 
-~~~bash
-npm install express helmet express-validator
-npm install dompurify
-~~~
+- Node.js 20 o superior.
+- npm 10 o superior.
+- Navegador Google Chrome.
+- Editor Visual Studio Code.
 
-6. Si trabajas con un servidor real, revisa Certbot desde su pagina oficial y sigue las instrucciones especificas para tu sistema operativo y servidor web.
-
-**Error comun:** instalar dependencias desde enlaces no oficiales.  
-**Correccion:** usa siempre documentacion oficial o repositorios confiables.
-
-## Nota tecnica breve
-
-El concepto de token CSRF sigue siendo valido. Sin embargo, la dependencia `csurf` debe tratarse como ejemplo didactico y no como recomendacion automatica para proyectos nuevos, porque fue marcada como deprecada por el equipo de Express. Tambien debes considerar que `X-XSS-Protection` es un encabezado heredado: Helmet.js actualmente lo desactiva con valor `0`. En certificados SSL/TLS, prioriza siempre la renovacion automatica porque los periodos de vigencia pueden cambiar.
+Si `node -v` o `npm -v` no funcionan, instala Node.js desde su sitio oficial antes de continuar.
 
 ---
 
-## Bloque 1 - HTTPS, HTTP y comunicacion segura
+# Parte 1 - Crear el proyecto desde cero
 
-**Objetivo del bloque:**  
-Diferenciar HTTP y HTTPS, identificando por que HTTPS es obligatorio en aplicaciones modernas.
+## Paso 1. Crear carpeta principal
 
-**Concepto trabajado:**  
-HTTPS, HTTP, cifrado en transito y SSL/TLS.
+Abre una terminal y ejecuta:
 
-**Explicacion breve:**  
-HTTP transmite datos sin cifrado. HTTPS cifra la comunicacion entre navegador y servidor usando SSL/TLS. Esto protege contraseñas, datos personales y formularios durante la transmision. El candado del navegador no significa que toda la aplicacion sea perfecta, pero si indica que la comunicacion viaja por un canal cifrado.
+```bash
+mkdir seguridad-web-practica
+cd seguridad-web-practica
+```
 
-**Ejemplo guiado:**
+**Qué debe pasar:** ahora estás dentro de una carpeta vacía llamada `seguridad-web-practica`.
 
-~~~text
-HTTP  : navegador -> datos sin cifrado -> servidor
-HTTPS : navegador -> datos cifrados con TLS -> servidor
-~~~
+**Verificación:**
 
-**Paso a paso:**
+```bash
+pwd
+```
 
-1. Abre un sitio que use `http://` y observa si el navegador muestra advertencia.
-2. Abre un sitio que use `https://` y observa el candado o indicador de seguridad.
-3. Identifica que HTTPS protege la comunicacion, no necesariamente toda la logica interna.
+o en Windows:
 
-**Actividad para ti:**  
-Escribe dos razones por las que una aplicacion con login debe usar HTTPS.
-
-**Espacio para responder:**
-
-1. ________________________________________________________________
-2. ________________________________________________________________
-
-**Resultado esperado:**  
-Debes reconocer que HTTPS evita que los datos viajen en texto plano y mejora la confianza del usuario.
-
-**Preguntas de validacion:**
-
-1. ¿Que diferencia principal existe entre HTTP y HTTPS?
-2. ¿Por que un formulario de login no deberia enviarse por HTTP?
-3. ¿HTTPS reemplaza la validacion del backend?
-
-**Error comun y correccion:**  
-Error: pensar que HTTPS soluciona todos los problemas de seguridad.  
-Correccion: HTTPS protege la comunicacion, pero tambien necesitas validacion, sanitizacion y controles adicionales.
+```bash
+cd
+```
 
 ---
 
-## Bloque 2 - Certificados SSL/TLS y Let's Encrypt
+## Paso 2. Crear carpetas para backend y frontend
 
-**Objetivo del bloque:**  
-Explicar que es un certificado SSL/TLS y como participa en una conexion HTTPS.
+```bash
+mkdir backend frontend
+```
 
-**Concepto trabajado:**  
-Certificado SSL/TLS, clave publica, clave privada, dominio y autoridad certificadora.
+Estructura esperada:
 
-**Explicacion breve:**  
-Un certificado SSL/TLS funciona como una identificacion digital del servidor. Vincula una clave criptografica con un dominio u organizacion. La clave publica se comparte, la clave privada permanece protegida en el servidor y la autoridad certificadora valida la identidad del sitio.
+```text
+seguridad-web-practica/
+├── backend/
+└── frontend/
+```
 
-**Ejemplo guiado:**
+**Qué significa:** separaremos el servidor Express del cliente React para entender mejor qué responsabilidad tiene cada capa.
 
-~~~text
-Dominio: app-universitaria.com
-Certificado: emitido para ese dominio
-Clave publica: disponible para establecer cifrado
-Clave privada: guardada solo en el servidor
-Autoridad certificadora: valida el certificado
-~~~
+---
 
-**Paso a paso:**
+# Parte 2 - Backend Express seguro paso a paso
 
-1. Revisa el certificado de un sitio HTTPS desde el navegador.
-2. Identifica el dominio para el que fue emitido.
-3. Observa la autoridad certificadora.
-4. Relaciona el certificado con la confianza del navegador.
+## Paso 3. Inicializar backend
 
-**Actividad para ti:**  
-Completa la tabla.
+```bash
+cd backend
+npm init -y
+```
 
-| Elemento | ¿Para que sirve? |
+**Qué se crea:** un archivo `package.json`.
+
+**Para qué sirve:** registra dependencias, scripts y configuración básica del proyecto Node.js.
+
+---
+
+## Paso 4. Instalar dependencias del backend
+
+```bash
+npm install express cors helmet express-validator cookie-parser dotenv
+npm install --save-dev nodemon
+```
+
+### ¿Para qué sirve cada dependencia?
+
+| Dependencia | Uso en la práctica |
 |---|---|
-| Clave publica | |
-| Clave privada | |
-| Autoridad certificadora | |
-| Dominio | |
-
-**Resultado esperado:**  
-Debes poder explicar que el certificado autentica al servidor y permite establecer comunicacion cifrada.
-
-**Preguntas de validacion:**
-
-1. ¿Que protege la clave privada?
-2. ¿Que valida una autoridad certificadora?
-3. ¿Por que es importante renovar certificados?
-
-**Error comun y correccion:**  
-Error: compartir o subir la clave privada a un repositorio.  
-Correccion: la clave privada debe mantenerse secreta en el servidor.
+| express | Crear servidor y rutas API |
+| cors | Permitir conexión desde React en desarrollo |
+| helmet | Configurar encabezados HTTP de seguridad |
+| express-validator | Validar y limpiar entradas del usuario |
+| cookie-parser | Leer cookies, útil para el ejemplo CSRF |
+| dotenv | Leer variables de entorno desde `.env` |
+| nodemon | Reiniciar servidor automáticamente en desarrollo |
 
 ---
 
-## Bloque 3 - HTTPS en Express y redireccion automatica
+## Paso 5. Configurar `package.json`
 
-**Objetivo del bloque:**  
-Reconocer la estructura basica para exponer una aplicacion Express mediante HTTPS y redirigir HTTP hacia HTTPS.
+Abre `backend/package.json` y reemplaza la sección `scripts` por esta:
 
-**Concepto trabajado:**  
-Modulo `https` de Node.js, certificados, puerto 443, puerto 80 y middleware de redireccion.
+```json
+{
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
+  }
+}
+```
 
-**Explicacion breve:**  
-Express define rutas y middlewares. Para servirlo por HTTPS, Node.js usa el modulo `https`, lee la clave privada y el certificado, y crea un servidor seguro. Ademas, se recomienda redirigir automaticamente cualquier acceso HTTP hacia HTTPS.
+Si tu `package.json` tiene más propiedades, no las borres. Solo cambia `scripts`.
 
-**Ejemplo guiado:**
+**Resultado esperado:** podrás ejecutar el backend con:
 
-Nombre del archivo sugerido: `app.js`  
-Objetivo del codigo: crear un servidor HTTPS basico con Express.
+```bash
+npm run dev
+```
 
-~~~javascript
-const express = require('express');
-const https = require('https');
-const fs = require('fs');
+---
 
-const aplicacion = express();
+## Paso 6. Crear estructura de archivos backend
 
-const opcionesSsl = {
-  key: fs.readFileSync('/ruta/a/clave-privada.key'),
-  cert: fs.readFileSync('/ruta/a/certificado.crt')
-};
+Desde la carpeta `backend`, ejecuta:
 
-aplicacion.get('/', (peticion, respuesta) => {
-  respuesta.send('Conexion segura con HTTPS establecida');
-});
+```bash
+mkdir src
+mkdir src/routes src/middlewares
+```
 
-https.createServer(opcionesSsl, aplicacion)
-  .listen(443, () => {
-    console.log('Servidor HTTPS corriendo en puerto 443');
+Crea estos archivos:
+
+```bash
+touch src/server.js
+touch src/routes/comments.routes.js
+touch src/middlewares/csrf-demo.js
+touch .env
+```
+
+En Windows PowerShell, si `touch` no funciona, usa:
+
+```powershell
+New-Item src/server.js
+New-Item src/routes/comments.routes.js
+New-Item src/middlewares/csrf-demo.js
+New-Item .env
+```
+
+Estructura esperada:
+
+```text
+backend/
+├── .env
+├── package.json
+└── src/
+    ├── server.js
+    ├── middlewares/
+    │   └── csrf-demo.js
+    └── routes/
+        └── comments.routes.js
+```
+
+---
+
+## Paso 7. Crear variables de entorno
+
+En `backend/.env` escribe:
+
+```env
+PORT=3001
+FRONTEND_URL=http://localhost:5173
+NODE_ENV=development
+```
+
+**Qué significa:**
+
+- `PORT`: puerto donde corre Express.
+- `FRONTEND_URL`: origen permitido para React.
+- `NODE_ENV`: ambiente de ejecución.
+
+**Error común:** escribir `localhost` sin `http://`. Para CORS necesitamos el origen completo.
+
+---
+
+## Paso 8. Crear middleware CSRF didáctico
+
+Abre `src/middlewares/csrf-demo.js` y pega:
+
+```js
+const crypto = require('crypto');
+
+const tokensActivos = new Set();
+
+function crearTokenCsrf(req, res) {
+  const token = crypto.randomBytes(24).toString('hex');
+  tokensActivos.add(token);
+
+  res.cookie('csrf_token_demo', token, {
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: false, // En producción con HTTPS debe ser true.
+    maxAge: 15 * 60 * 1000
   });
-~~~
 
-**Explicacion paso a paso del codigo:**
-
-1. `express` crea la aplicacion backend.
-2. `https` permite crear un servidor seguro.
-3. `fs` lee archivos del sistema.
-4. `opcionesSsl` contiene la clave privada y el certificado.
-5. `aplicacion.get('/')` define una ruta de prueba.
-6. `https.createServer(...)` envuelve la aplicacion Express en un servidor HTTPS.
-7. `listen(443)` usa el puerto estandar de HTTPS.
-
-**Resultado esperado:**  
-En consola deberia aparecer el mensaje: `Servidor HTTPS corriendo en puerto 443`.
-
-**Actividad espejo:**  
-Cambia el mensaje de la ruta `/` por: `Aplicacion segura funcionando`.
-
-**Modificacion guiada:**  
-Agrega una ruta `/estado` que responda: `Servidor activo`.
-
-**Preguntas de validacion:**
-
-1. ¿Por que se usa el modulo `https`?
-2. ¿Que archivos se leen en `opcionesSsl`?
-3. ¿Que puerto usa HTTPS por defecto?
-
-**Error comun y correccion:**  
-Error: colocar rutas incorrectas de certificado.  
-Correccion: verificar que los archivos existan y que el proceso de Node tenga permisos para leerlos.
-
----
-
-## Bloque 4 - XSS en React y sanitizacion con DOMPurify
-
-**Objetivo del bloque:**  
-Identificar riesgos XSS en contenido dinamico y aplicar sanitizacion cuando se necesita mostrar HTML.
-
-**Concepto trabajado:**  
-XSS reflejado, XSS almacenado, XSS basado en DOM, React, `dangerouslySetInnerHTML` y DOMPurify.
-
-**Explicacion breve:**  
-XSS ocurre cuando contenido no confiable termina ejecutandose como codigo en el navegador. React escapa contenido por defecto cuando se renderiza dentro de JSX. El riesgo aumenta cuando se usa `dangerouslySetInnerHTML`, porque inserta HTML directamente. Si necesitas mostrar HTML de usuario, primero debes sanitizarlo.
-
-**Ejemplo guiado:**
-
-Nombre del archivo sugerido: `EditorComentarios.jsx`  
-Objetivo del codigo: mostrar HTML limitado despues de sanitizarlo.
-
-~~~javascript
-import { useState } from 'react';
-import DOMPurify from 'dompurify';
-
-function EditorComentarios() {
-  const [contenidoHtml, setContenidoHtml] = useState('');
-
-  const obtenerHtmlSeguro = (htmlSucio) => {
-    return DOMPurify.sanitize(htmlSucio, {
-      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'p', 'br'],
-      ALLOWED_ATTR: []
-    });
-  };
-
-  return (
-    <div>
-      <textarea
-        value={contenidoHtml}
-        onChange={(e) => setContenidoHtml(e.target.value)}
-        placeholder="Escribe HTML permitido"
-      />
-
-      <div
-        dangerouslySetInnerHTML={{
-          __html: obtenerHtmlSeguro(contenidoHtml)
-        }}
-      />
-    </div>
-  );
+  res.json({ csrfToken: token });
 }
 
-export default EditorComentarios;
-~~~
+function validarTokenCsrf(req, res, next) {
+  const tokenHeader = req.get('X-CSRF-Token');
+  const tokenCookie = req.cookies.csrf_token_demo;
 
-**Explicacion paso a paso del codigo:**
+  if (!tokenHeader || !tokenCookie) {
+    return res.status(403).json({
+      error: 'Token CSRF requerido',
+      detalle: 'La solicitud debe incluir cookie y encabezado X-CSRF-Token.'
+    });
+  }
 
-1. `useState` guarda el contenido escrito por el usuario.
-2. `DOMPurify.sanitize` limpia el HTML recibido.
-3. `ALLOWED_TAGS` define las etiquetas permitidas.
-4. `ALLOWED_ATTR` evita permitir atributos HTML.
-5. `dangerouslySetInnerHTML` se usa solo despues de sanitizar.
-6. El contenido seguro se muestra en pantalla.
+  if (tokenHeader !== tokenCookie || !tokensActivos.has(tokenHeader)) {
+    return res.status(403).json({
+      error: 'Token CSRF inválido',
+      detalle: 'El token enviado no coincide con el token generado por el servidor.'
+    });
+  }
 
-**Resultado esperado:**  
-El componente permite formato HTML limitado y evita insertar contenido no autorizado.
+  next();
+}
 
-**Actividad espejo:**  
-Agrega la etiqueta `u` a la lista de etiquetas permitidas.
+module.exports = {
+  crearTokenCsrf,
+  validarTokenCsrf
+};
+```
 
-**Modificacion guiada:**  
-Cambia el placeholder por un mensaje que indique claramente que solo se permite HTML basico.
+### Explicación clara
 
-**Preguntas de validacion:**
+Este archivo simula un flujo CSRF seguro para clase:
 
-1. ¿Por que React protege por defecto al renderizar texto?
-2. ¿Cuando se vuelve riesgoso `dangerouslySetInnerHTML`?
-3. ¿Por que se define una lista de etiquetas permitidas?
+1. El servidor crea un token aleatorio.
+2. El token se guarda en una cookie.
+3. El token también se envía al frontend en JSON.
+4. React lo devuelve en el encabezado `X-CSRF-Token`.
+5. Express compara cookie y encabezado.
+6. Si no coinciden, rechaza la solicitud con estado `403`.
 
-**Error comun y correccion:**  
-Error: usar `dangerouslySetInnerHTML` con contenido sin limpiar.  
-Correccion: aplicar sanitizacion antes de renderizar.
+> Esta implementación es didáctica. En producción se debe usar una estrategia mantenida y alineada con la arquitectura real del proyecto.
 
 ---
 
-## Bloque 5 - Validacion y sanitizacion en Express
+## Paso 9. Crear rutas de comentarios con validación
 
-**Objetivo del bloque:**  
-Aplicar validacion y sanitizacion de entradas en el backend usando `express-validator`.
+Abre `src/routes/comments.routes.js` y pega:
 
-**Concepto trabajado:**  
-Middleware, `body`, `validationResult`, `trim`, `escape`, `isLength` y respuesta con error 400.
-
-**Explicacion breve:**  
-Validar solo en frontend no es suficiente. Un usuario puede enviar datos directamente al backend. Por eso Express debe revisar, limpiar y limitar entradas antes de procesarlas o guardarlas.
-
-**Ejemplo guiado:**
-
-Nombre del archivo sugerido: `comentarios.js`  
-Objetivo del codigo: validar nombre y comentario antes de responder.
-
-~~~javascript
+```js
 const express = require('express');
 const { body, validationResult } = require('express-validator');
+const { validarTokenCsrf } = require('../middlewares/csrf-demo');
 
-const aplicacion = express();
-aplicacion.use(express.json());
+const router = express.Router();
 
-aplicacion.post('/api/comentarios',
+const comentarios = [];
+
+router.get('/', (req, res) => {
+  res.json({
+    total: comentarios.length,
+    comentarios
+  });
+});
+
+router.post(
+  '/',
+  validarTokenCsrf,
   [
     body('nombre')
       .trim()
       .escape()
       .isLength({ min: 3, max: 50 })
-      .withMessage('El nombre debe tener entre 3 y 50 caracteres'),
+      .withMessage('El nombre debe tener entre 3 y 50 caracteres.'),
 
     body('comentario')
       .trim()
       .escape()
-      .isLength({ min: 10, max: 500 })
-      .withMessage('El comentario debe tener entre 10 y 500 caracteres')
+      .isLength({ min: 5, max: 300 })
+      .withMessage('El comentario debe tener entre 5 y 300 caracteres.')
   ],
-  (peticion, respuesta) => {
-    const errores = validationResult(peticion);
+  (req, res) => {
+    const errores = validationResult(req);
 
     if (!errores.isEmpty()) {
-      return respuesta.status(400).json({ errores: errores.array() });
+      return res.status(400).json({
+        mensaje: 'Datos inválidos',
+        errores: errores.array()
+      });
     }
 
-    const { nombre, comentario } = peticion.body;
-    respuesta.json({ mensaje: 'Comentario validado de forma segura', nombre, comentario });
+    const nuevoComentario = {
+      id: Date.now(),
+      nombre: req.body.nombre,
+      comentario: req.body.comentario,
+      fecha: new Date().toISOString()
+    };
+
+    comentarios.push(nuevoComentario);
+
+    res.status(201).json({
+      mensaje: 'Comentario guardado de forma segura',
+      comentario: nuevoComentario
+    });
   }
 );
 
-aplicacion.listen(3001, () => {
-  console.log('Servidor en puerto 3001');
-});
-~~~
+module.exports = router;
+```
 
-**Explicacion paso a paso del codigo:**
+### Explicación paso a paso
 
-1. `express.json()` permite leer datos JSON.
-2. `body('nombre')` valida el campo `nombre`.
-3. `trim()` elimina espacios al inicio y al final.
-4. `escape()` convierte caracteres HTML especiales.
-5. `isLength()` controla longitud minima y maxima.
-6. `validationResult()` recoge errores.
-7. Si hay errores, el servidor responde con estado `400`.
-8. Si no hay errores, se procesa la respuesta segura.
-
-**Resultado esperado:**  
-Cuando los datos no cumplen las reglas, el backend devuelve errores. Cuando cumplen, responde con mensaje de validacion correcta.
-
-**Actividad espejo:**  
-Agrega una validacion para un campo `correo` con longitud minima de 8 caracteres.
-
-**Modificacion guiada:**  
-Cambia el maximo del comentario de 500 a 300 caracteres.
-
-**Preguntas de validacion:**
-
-1. ¿Por que el backend debe validar aunque React ya valide?
-2. ¿Que hace `escape()`?
-3. ¿Por que se responde con estado `400` ante errores?
-
-**Error comun y correccion:**  
-Error: guardar datos antes de validar.  
-Correccion: ubicar la validacion antes del procesamiento principal.
+- `router.get('/')`: devuelve todos los comentarios guardados en memoria.
+- `router.post('/')`: permite guardar un comentario nuevo.
+- `validarTokenCsrf`: bloquea solicitudes sin token.
+- `body('nombre')`: valida el campo nombre.
+- `trim()`: elimina espacios al inicio y final.
+- `escape()`: convierte caracteres HTML especiales en texto seguro.
+- `isLength()`: limita cantidad de caracteres.
+- `validationResult(req)`: recoge errores de validación.
+- `status(400)`: indica que el cliente envió datos inválidos.
+- `status(201)`: indica que se creó un recurso.
 
 ---
 
-## Bloque 6 - CSRF y tokens de proteccion
+## Paso 10. Crear servidor principal Express
 
-**Objetivo del bloque:**  
-Interpretar el flujo de tokens CSRF entre backend y frontend.
+Abre `src/server.js` y pega:
 
-**Concepto trabajado:**  
-CSRF, token unico, solicitud sensible, validacion del servidor y error 403.
+```js
+require('dotenv').config();
 
-**Explicacion breve:**  
-CSRF ocurre cuando una aplicacion externa intenta provocar una accion usando una sesion activa del usuario. La defensa explicada en esta sesion es usar tokens CSRF: el servidor genera un token, el cliente lo envia en solicitudes sensibles y el backend lo valida antes de procesar la accion.
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
+const comentariosRouter = require('./routes/comments.routes');
+const { crearTokenCsrf } = require('./middlewares/csrf-demo');
 
-**Ejemplo guiado:**
+const app = express();
+const PORT = process.env.PORT || 3001;
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
-Nombre del archivo sugerido: `FormularioSeguro.jsx`  
-Objetivo del codigo: enviar un token CSRF obtenido desde el backend.
+app.use(helmet());
 
-~~~javascript
-import { useState, useEffect } from 'react';
+app.use(cors({
+  origin: FRONTEND_URL,
+  credentials: true
+}));
 
-function FormularioSeguro() {
+app.use(express.json());
+app.use(cookieParser());
+
+app.get('/api/health', (req, res) => {
+  res.json({
+    estado: 'OK',
+    mensaje: 'Backend Express funcionando',
+    seguridad: ['Helmet activo', 'Validación activa', 'CSRF demo disponible']
+  });
+});
+
+app.get('/api/csrf-token', crearTokenCsrf);
+
+app.use('/api/comments', comentariosRouter);
+
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Ruta no encontrada'
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Servidor Express activo en http://localhost:${PORT}`);
+});
+```
+
+### ¿Qué hace este archivo?
+
+1. Carga variables de entorno.
+2. Crea la aplicación Express.
+3. Activa Helmet.js.
+4. Permite solicitudes desde React usando CORS.
+5. Permite recibir JSON.
+6. Lee cookies.
+7. Crea una ruta de salud.
+8. Crea una ruta para pedir token CSRF.
+9. Conecta la ruta de comentarios.
+10. Maneja rutas no encontradas.
+
+---
+
+## Paso 11. Ejecutar backend
+
+Desde la carpeta `backend`:
+
+```bash
+npm run dev
+```
+
+Resultado esperado:
+
+```text
+Servidor Express activo en http://localhost:3001
+```
+
+Prueba en el navegador:
+
+```text
+http://localhost:3001/api/health
+```
+
+Deberías ver una respuesta JSON similar a:
+
+```json
+{
+  "estado": "OK",
+  "mensaje": "Backend Express funcionando",
+  "seguridad": ["Helmet activo", "Validación activa", "CSRF demo disponible"]
+}
+```
+
+---
+
+## Paso 12. Probar errores de validación con Postman, Thunder Client o REST Client
+
+Solicita primero el token:
+
+```http
+GET http://localhost:3001/api/csrf-token
+```
+
+Copia el valor `csrfToken`.
+
+Luego intenta enviar un comentario inválido:
+
+```http
+POST http://localhost:3001/api/comments
+Content-Type: application/json
+X-CSRF-Token: PEGA_AQUI_EL_TOKEN
+
+{
+  "nombre": "A",
+  "comentario": "Hi"
+}
+```
+
+Resultado esperado:
+
+```json
+{
+  "mensaje": "Datos inválidos",
+  "errores": [
+    { "msg": "El nombre debe tener entre 3 y 50 caracteres." },
+    { "msg": "El comentario debe tener entre 5 y 300 caracteres." }
+  ]
+}
+```
+
+Ahora prueba con datos válidos:
+
+```http
+POST http://localhost:3001/api/comments
+Content-Type: application/json
+X-CSRF-Token: PEGA_AQUI_EL_TOKEN
+
+{
+  "nombre": "Ana Torres",
+  "comentario": "Esta aplicación valida datos antes de guardarlos."
+}
+```
+
+Resultado esperado:
+
+```json
+{
+  "mensaje": "Comentario guardado de forma segura",
+  "comentario": {
+    "id": 123456789,
+    "nombre": "Ana Torres",
+    "comentario": "Esta aplicación valida datos antes de guardarlos.",
+    "fecha": "..."
+  }
+}
+```
+
+---
+
+# Parte 3 - Frontend React paso a paso
+
+## Paso 13. Crear proyecto React con Vite
+
+Abre otra terminal. Desde `seguridad-web-practica/frontend`, ejecuta:
+
+```bash
+cd ../frontend
+npm create vite@latest . -- --template react
+npm install
+npm install dompurify
+```
+
+Si Vite pregunta si deseas continuar, responde `y`.
+
+---
+
+## Paso 14. Crear variable de entorno frontend
+
+En la carpeta `frontend`, crea un archivo `.env`:
+
+```env
+VITE_API_URL=http://localhost:3001
+```
+
+**Qué significa:** React usará esta URL para conectarse al backend.
+
+---
+
+## Paso 15. Crear carpetas del frontend
+
+```bash
+mkdir src/components src/services
+```
+
+Crea archivos:
+
+```bash
+touch src/services/api.js
+touch src/components/CommentForm.jsx
+touch src/components/HtmlPreview.jsx
+touch src/components/SecurityChecklist.jsx
+```
+
+En Windows PowerShell:
+
+```powershell
+New-Item src/services/api.js
+New-Item src/components/CommentForm.jsx
+New-Item src/components/HtmlPreview.jsx
+New-Item src/components/SecurityChecklist.jsx
+```
+
+---
+
+## Paso 16. Crear servicio API
+
+Abre `src/services/api.js` y pega:
+
+```js
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
+export async function obtenerTokenCsrf() {
+  const respuesta = await fetch(`${API_URL}/api/csrf-token`, {
+    credentials: 'include'
+  });
+
+  if (!respuesta.ok) {
+    throw new Error('No se pudo obtener el token CSRF');
+  }
+
+  return respuesta.json();
+}
+
+export async function listarComentarios() {
+  const respuesta = await fetch(`${API_URL}/api/comments`, {
+    credentials: 'include'
+  });
+
+  if (!respuesta.ok) {
+    throw new Error('No se pudieron cargar los comentarios');
+  }
+
+  return respuesta.json();
+}
+
+export async function guardarComentario(datos, tokenCsrf) {
+  const respuesta = await fetch(`${API_URL}/api/comments`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': tokenCsrf
+    },
+    body: JSON.stringify(datos)
+  });
+
+  const cuerpo = await respuesta.json();
+
+  if (!respuesta.ok) {
+    throw cuerpo;
+  }
+
+  return cuerpo;
+}
+```
+
+### Explicación clara
+
+- `credentials: 'include'`: permite enviar y recibir cookies entre React y Express.
+- `obtenerTokenCsrf()`: pide el token al backend.
+- `guardarComentario()`: envía nombre, comentario y token.
+- `X-CSRF-Token`: encabezado que el backend verificará.
+
+---
+
+## Paso 17. Crear formulario de comentarios
+
+Abre `src/components/CommentForm.jsx` y pega:
+
+```jsx
+import { useEffect, useState } from 'react';
+import { guardarComentario, listarComentarios, obtenerTokenCsrf } from '../services/api';
+
+export function CommentForm() {
   const [tokenCsrf, setTokenCsrf] = useState('');
   const [nombre, setNombre] = useState('');
+  const [comentario, setComentario] = useState('');
+  const [comentarios, setComentarios] = useState([]);
+  const [mensaje, setMensaje] = useState('');
+  const [errores, setErrores] = useState([]);
+
+  async function cargarDatosIniciales() {
+    const token = await obtenerTokenCsrf();
+    setTokenCsrf(token.csrfToken);
+
+    const lista = await listarComentarios();
+    setComentarios(lista.comentarios);
+  }
 
   useEffect(() => {
-    fetch('/api/obtener-token-csrf')
-      .then(respuesta => respuesta.json())
-      .then(datos => setTokenCsrf(datos.tokenCsrf));
+    cargarDatosIniciales().catch(() => {
+      setMensaje('No se pudo conectar con el backend.');
+    });
   }, []);
 
-  const enviarFormulario = async (evento) => {
+  async function manejarEnvio(evento) {
     evento.preventDefault();
+    setMensaje('');
+    setErrores([]);
 
-    await fetch('/api/datos-importantes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'CSRF-Token': tokenCsrf
-      },
-      body: JSON.stringify({ nombre })
-    });
+    try {
+      const respuesta = await guardarComentario({ nombre, comentario }, tokenCsrf);
+      setMensaje(respuesta.mensaje);
+      setNombre('');
+      setComentario('');
 
-    alert('Datos enviados de forma segura');
-  };
+      const lista = await listarComentarios();
+      setComentarios(lista.comentarios);
+    } catch (error) {
+      setMensaje(error.mensaje || error.error || 'Error al guardar comentario.');
+      setErrores(error.errores || []);
+    }
+  }
 
   return (
-    <form onSubmit={enviarFormulario}>
-      <input value={nombre} onChange={(e) => setNombre(e.target.value)} />
-      <button type="submit">Enviar</button>
-    </form>
+    <section className="card">
+      <h2>Formulario seguro</h2>
+      <p>Este formulario envía datos al backend con validación y token CSRF.</p>
+
+      <form onSubmit={manejarEnvio}>
+        <label>
+          Nombre
+          <input
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            placeholder="Ejemplo: Ana Torres"
+          />
+        </label>
+
+        <label>
+          Comentario
+          <textarea
+            value={comentario}
+            onChange={(e) => setComentario(e.target.value)}
+            placeholder="Escribe un comentario de al menos 5 caracteres"
+          />
+        </label>
+
+        <button type="submit">Guardar comentario</button>
+      </form>
+
+      {mensaje && <p className="mensaje">{mensaje}</p>}
+
+      {errores.length > 0 && (
+        <ul className="errores">
+          {errores.map((error, index) => (
+            <li key={index}>{error.msg}</li>
+          ))}
+        </ul>
+      )}
+
+      <h3>Comentarios guardados</h3>
+      {comentarios.length === 0 ? (
+        <p>Aún no hay comentarios.</p>
+      ) : (
+        <ul>
+          {comentarios.map((item) => (
+            <li key={item.id}>
+              <strong>{item.nombre}</strong>: {item.comentario}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+```
+
+### ¿Qué debes observar?
+
+Cuando escribes datos inválidos, el backend responde con errores. Cuando escribes datos válidos, el comentario se guarda. React muestra el comentario como texto, no como código ejecutable.
+
+---
+
+## Paso 18. Crear componente para HTML sanitizado
+
+Abre `src/components/HtmlPreview.jsx` y pega:
+
+```jsx
+import { useState } from 'react';
+import DOMPurify from 'dompurify';
+
+export function HtmlPreview() {
+  const [htmlUsuario, setHtmlUsuario] = useState('<p>Texto con <strong>negrita</strong></p>');
+
+  const htmlSeguro = DOMPurify.sanitize(htmlUsuario, {
+    ALLOWED_TAGS: ['p', 'strong', 'em', 'b', 'i', 'br', 'ul', 'ol', 'li'],
+    ALLOWED_ATTR: []
+  });
+
+  return (
+    <section className="card">
+      <h2>Vista previa HTML sanitizada</h2>
+      <p>
+        Este ejemplo permite algunas etiquetas de formato, pero elimina contenido no permitido.
+      </p>
+
+      <textarea
+        value={htmlUsuario}
+        onChange={(e) => setHtmlUsuario(e.target.value)}
+      />
+
+      <h3>HTML original escrito por el usuario</h3>
+      <pre>{htmlUsuario}</pre>
+
+      <h3>Resultado sanitizado con DOMPurify</h3>
+      <div
+        className="preview"
+        dangerouslySetInnerHTML={{ __html: htmlSeguro }}
+      />
+    </section>
+  );
+}
+```
+
+### Prueba segura para clase
+
+Escribe este contenido en el textarea:
+
+```html
+<p>Hola <strong>clase</strong></p>
+<script>alert('prueba')</script>
+```
+
+**Resultado esperado:** se conserva el párrafo y la negrita, pero el script no debe ejecutarse.
+
+**Importante:** no uses este ejemplo para atacar sitios reales. Aquí se usa solo para verificar que la sanitización funciona en un entorno de práctica.
+
+---
+
+## Paso 19. Crear checklist visual
+
+Abre `src/components/SecurityChecklist.jsx` y pega:
+
+```jsx
+export function SecurityChecklist() {
+  const items = [
+    'HTTPS protege la comunicación en producción',
+    'React escapa texto por defecto',
+    'DOMPurify sanitiza HTML permitido',
+    'Express valida entradas antes de guardar',
+    'Helmet.js agrega encabezados HTTP de seguridad',
+    'Token CSRF protege solicitudes sensibles',
+    'Lighthouse ayuda a auditar buenas prácticas'
+  ];
+
+  return (
+    <section className="card">
+      <h2>Checklist de seguridad web</h2>
+      <ul>
+        {items.map((item) => (
+          <li key={item}>[OK] {item}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+```
+
+---
+
+## Paso 20. Conectar todo en `App.jsx`
+
+Abre `src/App.jsx` y reemplaza todo por:
+
+```jsx
+import './App.css';
+import { CommentForm } from './components/CommentForm';
+import { HtmlPreview } from './components/HtmlPreview';
+import { SecurityChecklist } from './components/SecurityChecklist';
+
+function App() {
+  return (
+    <main className="container">
+      <header className="hero">
+        <h1>Seguridad web con Express y React</h1>
+        <p>
+          Práctica guiada: HTTPS, XSS, CSRF, Helmet.js, validación y Lighthouse.
+        </p>
+      </header>
+
+      <SecurityChecklist />
+      <CommentForm />
+      <HtmlPreview />
+    </main>
   );
 }
 
-export default FormularioSeguro;
-~~~
-
-**Explicacion paso a paso del codigo:**
-
-1. `tokenCsrf` almacena el token recibido del servidor.
-2. `nombre` almacena el dato escrito por el usuario.
-3. `useEffect` solicita el token al cargar el componente.
-4. `fetch('/api/obtener-token-csrf')` obtiene el token.
-5. `enviarFormulario` evita la recarga de pagina.
-6. La solicitud `POST` incluye `CSRF-Token` en los encabezados.
-7. El backend debe validar el token antes de procesar datos.
-
-**Resultado esperado:**  
-El formulario envia datos junto con el token. Si el backend valida correctamente, procesa la solicitud. Si el token falta o no coincide, debe rechazarla.
-
-**Actividad espejo:**  
-Agrega un segundo campo llamado `mensaje` y envialo junto con `nombre`.
-
-**Modificacion guiada:**  
-Cambia el texto del boton por `Guardar datos`.
-
-**Preguntas de validacion:**
-
-1. ¿Por que el token se obtiene desde el servidor?
-2. ¿En que tipo de solicitudes se debe enviar el token?
-3. ¿Que estado HTTP puede usar el servidor si el token es invalido?
-
-**Error comun y correccion:**  
-Error: escribir un token fijo dentro del frontend.  
-Correccion: solicitar el token al servidor y renovarlo segun la estrategia definida.
+export default App;
+```
 
 ---
 
-## Bloque 7 - Helmet.js y encabezados de seguridad
+## Paso 21. Agregar estilos básicos
 
-**Objetivo del bloque:**  
-Configurar Helmet.js en Express como capa adicional de encabezados HTTP de seguridad.
+Abre `src/App.css` y reemplaza todo por:
 
-**Concepto trabajado:**  
-Helmet.js, Content Security Policy, X-Frame-Options, X-Content-Type-Options y Strict-Transport-Security.
+```css
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #e5e7eb;
+}
 
-**Explicacion breve:**  
-Helmet.js es una coleccion de middlewares para Express que configura encabezados HTTP relacionados con seguridad. Ayuda a reducir riesgos comunes mediante configuracion minima. No reemplaza HTTPS, validacion ni sanitizacion; los complementa.
+.container {
+  width: min(1000px, 92%);
+  margin: 0 auto;
+  padding: 32px 0;
+}
 
-**Ejemplo guiado:**
+.hero {
+  background: #111827;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
 
-Nombre del archivo sugerido: `app.js`  
-Objetivo del codigo: activar Helmet.js en una aplicacion Express.
+.card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
 
-~~~javascript
+label {
+  display: block;
+  margin-bottom: 14px;
+  font-weight: bold;
+}
+
+input,
+textarea {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #64748b;
+  font-size: 16px;
+}
+
+textarea {
+  min-height: 100px;
+}
+
+button {
+  background: #38bdf8;
+  color: #082f49;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #7dd3fc;
+}
+
+.mensaje {
+  background: #0f766e;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.errores {
+  background: #7f1d1d;
+  padding: 12px 24px;
+  border-radius: 8px;
+}
+
+.preview {
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+pre {
+  white-space: pre-wrap;
+  background: #020617;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+```
+
+---
+
+## Paso 22. Ejecutar frontend
+
+Desde la carpeta `frontend`:
+
+```bash
+npm run dev
+```
+
+Abre:
+
+```text
+http://localhost:5173
+```
+
+**Resultado esperado:** debes ver la aplicación con checklist, formulario y vista previa HTML.
+
+---
+
+# Parte 4 - Pruebas guiadas
+
+## Prueba 1. Verificar conexión backend
+
+Abre en navegador:
+
+```text
+http://localhost:3001/api/health
+```
+
+Marca:
+
+- [ ] El backend responde `estado: OK`.
+- [ ] Se muestra Helmet activo.
+- [ ] Se muestra CSRF demo disponible.
+
+---
+
+## Prueba 2. Validación en Express
+
+En el formulario React escribe:
+
+```text
+Nombre: A
+Comentario: Ok
+```
+
+Presiona **Guardar comentario**.
+
+Resultado esperado:
+
+- El backend rechaza los datos.
+- La interfaz muestra errores.
+- No se guarda el comentario.
+
+Ahora escribe:
+
+```text
+Nombre: María López
+Comentario: Comentario válido para probar seguridad.
+```
+
+Resultado esperado:
+
+- El backend acepta los datos.
+- El comentario aparece en la lista.
+
+---
+
+## Prueba 3. React escapa contenido por defecto
+
+En el comentario escribe un texto con apariencia de HTML:
+
+```html
+<strong>Hola</strong>
+```
+
+Resultado esperado:
+
+- En la lista de comentarios debe mostrarse como texto o como contenido escapado según la respuesta del backend.
+- No debe ejecutarse nada como código.
+
+---
+
+## Prueba 4. DOMPurify permite formato seguro
+
+En la sección de vista previa HTML escribe:
+
+```html
+<p>Texto con <strong>negrita</strong> y <em>énfasis</em></p>
+```
+
+Resultado esperado:
+
+- El texto se muestra con formato.
+- Las etiquetas permitidas se conservan.
+
+Ahora escribe:
+
+```html
+<p>Texto válido</p><script>alert('prueba')</script>
+```
+
+Resultado esperado:
+
+- El párrafo se conserva.
+- El script no se ejecuta.
+- DOMPurify elimina lo no permitido.
+
+---
+
+## Prueba 5. CSRF didáctico
+
+En `src/services/api.js`, comenta temporalmente esta línea:
+
+```js
+'X-CSRF-Token': tokenCsrf
+```
+
+Intenta guardar un comentario válido.
+
+Resultado esperado:
+
+```text
+Token CSRF requerido
+```
+
+Luego vuelve a activar la línea.
+
+**Qué aprendiste:** el backend no acepta solicitudes sensibles si falta el token.
+
+---
+
+## Prueba 6. Helmet.js
+
+Abre DevTools en Chrome, pestaña **Network**.
+
+1. Recarga `http://localhost:3001/api/health`.
+2. Selecciona la solicitud.
+3. Revisa **Response Headers**.
+4. Busca encabezados agregados por Helmet.
+
+Puedes encontrar encabezados como:
+
+```text
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=...
+```
+
+> En desarrollo local puede que algunos encabezados se comporten distinto según HTTP/HTTPS. Lo importante es reconocer que Helmet agrega reglas de seguridad a las respuestas.
+
+---
+
+## Prueba 7. Lighthouse
+
+1. Abre `http://localhost:5173` en Chrome.
+2. Presiona `F12`.
+3. Abre la pestaña **Lighthouse**.
+4. Selecciona **Best Practices / Mejores prácticas**.
+5. Ejecuta el análisis.
+6. Revisa advertencias.
+
+**Interpretación esperada:**
+
+- Si Lighthouse indica que no hay HTTPS, recuerda que estás en entorno local.
+- En producción, la aplicación debe servirse por HTTPS.
+- Lighthouse ayuda a encontrar señales, pero no reemplaza auditoría completa de seguridad.
+
+---
+
+# Parte 5 - HTTPS y certificados: explicación práctica sin complicar el laboratorio
+
+En producción, HTTPS se aplica con certificados reales. Para clase local, no es obligatorio instalar un certificado real porque el foco es entender el flujo. El concepto es:
+
+```text
+Usuario -> HTTPS/TLS -> Servidor Express o plataforma de hosting
+```
+
+Ejemplo conceptual de Express con HTTPS:
+
+```js
+const https = require('https');
+const fs = require('fs');
 const express = require('express');
-const helmet = require('helmet');
 
-const aplicacion = express();
+const app = express();
 
-aplicacion.use(helmet());
+const opcionesSsl = {
+  key: fs.readFileSync('/ruta/privkey.pem'),
+  cert: fs.readFileSync('/ruta/fullchain.pem')
+};
 
-aplicacion.get('/', (peticion, respuesta) => {
-  respuesta.send('Aplicacion protegida con Helmet');
+https.createServer(opcionesSsl, app).listen(443, () => {
+  console.log('Servidor HTTPS activo');
 });
+```
 
-aplicacion.listen(3001, () => {
-  console.log('Servidor corriendo en puerto 3001');
-});
-~~~
-
-**Explicacion paso a paso del codigo:**
-
-1. `helmet` se importa como dependencia.
-2. `aplicacion.use(helmet())` registra el middleware.
-3. Las rutas se declaran despues del middleware.
-4. Las respuestas incluyen encabezados de seguridad configurados por Helmet.
-5. El servidor se ejecuta en el puerto `3001`.
-
-**Resultado esperado:**  
-El servidor responde normalmente y añade encabezados de seguridad.
-
-**Actividad espejo:**  
-Agrega una ruta `/seguridad` que responda `Headers activos`.
-
-**Modificacion guiada:**  
-Ubica `aplicacion.use(helmet())` antes de las rutas y explica por que conviene hacerlo asi.
-
-**Preguntas de validacion:**
-
-1. ¿Para que sirve Helmet.js?
-2. ¿Helmet reemplaza DOMPurify?
-3. ¿Por que los encabezados HTTP ayudan al navegador?
-
-**Error comun y correccion:**  
-Error: creer que Helmet vuelve segura toda la aplicacion por si solo.  
-Correccion: usar Helmet como parte de una defensa por capas.
+**No copies rutas de certificado al azar.** En un servidor real, esas rutas dependen del sistema, dominio y herramienta usada.
 
 ---
 
-## Bloque 8 - Auditoria con Lighthouse
+# Parte 6 - Problemas frecuentes y solución
 
-**Objetivo del bloque:**  
-Usar Lighthouse como auditoria inicial para revisar buenas practicas de una aplicacion web.
+## Error 1. CORS bloquea la solicitud
 
-**Concepto trabajado:**  
-Lighthouse, Chrome DevTools, linea de comandos, mejores practicas, HTTPS y encabezados.
+Mensaje típico:
 
-**Explicacion breve:**  
-Lighthouse es una herramienta automatizada para evaluar calidad web. Permite revisar rendimiento, accesibilidad, SEO, PWA y mejores practicas. En esta sesion se usa como apoyo para detectar señales de seguridad basica, como HTTPS, librerias vulnerables y encabezados.
+```text
+Access to fetch at ... has been blocked by CORS policy
+```
 
-**Ejemplo guiado:**
+Solución:
 
-Nombre del procedimiento: auditoria desde terminal.  
-Objetivo: generar un reporte de buenas practicas.
-
-~~~bash
-npm install -g lighthouse
-lighthouse https://mi-aplicacion.com --only-categories=best-practices --view
-~~~
-
-**Paso a paso:**
-
-1. Instala Lighthouse globalmente con npm.
-2. Ejecuta la auditoria indicando una URL HTTPS.
-3. Usa `--only-categories=best-practices` para enfocarte en buenas practicas.
-4. Usa `--view` para abrir el reporte en el navegador.
-5. Revisa advertencias relacionadas con HTTPS, librerias y encabezados.
-
-**Resultado esperado:**  
-Se abre un reporte Lighthouse en el navegador con una puntuacion y recomendaciones.
-
-**Actividad para ti:**  
-Ejecuta Lighthouse sobre una URL de prueba o aplicacion propia. Anota tres hallazgos.
-
-**Espacio para responder:**
-
-1. ________________________________________________________________
-2. ________________________________________________________________
-3. ________________________________________________________________
-
-**Preguntas de validacion:**
-
-1. ¿Que categoria de Lighthouse se relaciona mas con esta sesion?
-2. ¿Por que Lighthouse no reemplaza una auditoria completa de seguridad?
-3. ¿Que mejora aplicarias si Lighthouse detecta falta de encabezados?
-
-**Error comun y correccion:**  
-Error: interpretar el puntaje como garantia total de seguridad.  
-Correccion: usar Lighthouse como auditoria inicial y complementar con pruebas adicionales cuando corresponda.
+1. Verifica que `FRONTEND_URL=http://localhost:5173` en backend.
+2. Verifica que `app.use(cors({ origin: FRONTEND_URL, credentials: true }))` esté antes de las rutas.
+3. Reinicia backend.
 
 ---
 
-## Actividades integradoras
+## Error 2. No se guarda comentario por CSRF
 
-### Actividad 1 - Reconocimiento y correccion guiada
+Causa probable:
 
-Lee el siguiente diagnostico y marca que practica falta.
+- No se pidió token.
+- No se envió encabezado `X-CSRF-Token`.
+- No se incluyó `credentials: 'include'`.
 
-> Una aplicacion permite login, usa React y Express, pero todavia se publica por HTTP.
+Solución:
 
-**Practica faltante:** ________________________________________________
+1. Revisa `obtenerTokenCsrf()`.
+2. Revisa `guardarComentario()`.
+3. Verifica que el navegador tenga cookie `csrf_token_demo`.
 
-**Justificacion breve:** ______________________________________________
+---
 
-### Actividad 2 - Interpretacion y aplicacion
+## Error 3. React no conecta con Express
 
-Relaciona cada riesgo con su defensa principal.
+Solución:
 
-| Riesgo | Defensa |
-|---|---|
-| Datos viajan sin cifrado | |
-| HTML de usuario se muestra directamente | |
-| Formulario sensible sin token | |
-| Respuestas sin encabezados de seguridad | |
-| Falta de revision de buenas practicas | |
+1. Backend debe correr en `http://localhost:3001`.
+2. Frontend debe correr en `http://localhost:5173`.
+3. `.env` del frontend debe tener `VITE_API_URL=http://localhost:3001`.
+4. Reinicia Vite si cambiaste `.env`.
 
-### Actividad 3 - Modelado o construccion
+---
 
-Diseña una checklist de 6 pasos para revisar una aplicacion Express y React antes de publicarla.
+## Error 4. DOMPurify no funciona
 
-1. ________________________________________________________________
-2. ________________________________________________________________
-3. ________________________________________________________________
-4. ________________________________________________________________
-5. ________________________________________________________________
-6. ________________________________________________________________
+Solución:
 
-### Actividad 4 - Integracion estructural
+1. Verifica instalación:
 
-Describe el flujo completo de seguridad para una accion `POST` importante desde React hacia Express.
+```bash
+npm install dompurify
+```
 
-**Respuesta:**
+2. Verifica importación:
 
-____________________________________________________________________
+```js
+import DOMPurify from 'dompurify';
+```
 
-____________________________________________________________________
+3. Reinicia frontend.
 
-____________________________________________________________________
+---
 
-## Checklist final de aprendizaje
+# Parte 7 - Checklist final de entrega
 
-Marca cada criterio cuando lo cumplas.
+Marca cada punto antes de terminar:
 
-- [ ] Diferencio HTTP y HTTPS.
-- [ ] Explico para que sirve un certificado SSL/TLS.
-- [ ] Reconozco el rol de la clave publica y clave privada.
-- [ ] Comprendo por que Express debe validar datos.
-- [ ] Identifico el riesgo de `dangerouslySetInnerHTML`.
-- [ ] Se cuando aplicar DOMPurify.
-- [ ] Interpreto el flujo de token CSRF.
-- [ ] Entiendo que Helmet.js configura encabezados de seguridad.
-- [ ] Puedo ejecutar una auditoria basica con Lighthouse.
-- [ ] Entiendo que la seguridad web requiere varias capas.
+- [ ] El backend inicia con `npm run dev`.
+- [ ] El frontend inicia con `npm run dev`.
+- [ ] `/api/health` responde correctamente.
+- [ ] Helmet.js está activo.
+- [ ] El formulario rechaza datos inválidos.
+- [ ] El formulario acepta datos válidos.
+- [ ] El POST falla si falta `X-CSRF-Token`.
+- [ ] DOMPurify elimina HTML no permitido.
+- [ ] Lighthouse fue ejecutado al menos una vez.
+- [ ] Puedes explicar la diferencia entre HTTPS, XSS y CSRF.
 
-## Resumen tecnico
+---
 
-Una aplicacion web segura requiere proteger la comunicacion, controlar datos no confiables, validar entradas, proteger acciones sensibles, configurar encabezados de seguridad y auditar periodicamente. HTTPS, DOMPurify, `express-validator`, tokens CSRF, Helmet.js y Lighthouse cumplen funciones distintas dentro de una misma estrategia de defensa por capas.
+# Parte 8 - Entrega del estudiante
 
-## Tabla de decisiones e impactos
+Sube a tu LMS o repositorio:
 
-| Decision tecnica | Impacto esperado |
-|---|---|
-| Activar HTTPS | Protege la comunicacion entre navegador y servidor |
-| Redirigir HTTP a HTTPS | Evita accesos inseguros por enlaces antiguos o errores de usuario |
-| Sanitizar HTML con DOMPurify | Reduce riesgos al mostrar contenido enriquecido |
-| Validar en Express | Evita procesar datos incorrectos o no confiables |
-| Usar tokens CSRF | Verifica solicitudes sensibles |
-| Activar Helmet.js | Agrega encabezados HTTP de seguridad |
-| Auditar con Lighthouse | Detecta oportunidades de mejora iniciales |
+1. Captura del backend funcionando.
+2. Captura del frontend funcionando.
+3. Captura de validación con error.
+4. Captura de comentario guardado correctamente.
+5. Captura de DOMPurify limpiando contenido no permitido.
+6. Captura de Lighthouse.
+7. Respuesta breve:
 
-## Autoevaluacion profesional
+```text
+¿Qué capa de seguridad te parece más importante y por qué?
+```
 
-Responde con tus propias palabras.
+---
 
-1. ¿Que parte de la seguridad web se resuelve con HTTPS?
-2. ¿Que diferencia existe entre XSS y CSRF?
-3. ¿Por que no basta con validar en React?
-4. ¿Que aporta Helmet.js dentro de Express?
-5. ¿Como usarias Lighthouse despues de hacer mejoras?
+# Rúbrica breve sobre 20 puntos
 
-## Cierre de la practica
+| Criterio | Puntaje |
+|---|---:|
+| Proyecto creado correctamente desde cero | 3 |
+| Backend Express funcional con Helmet | 3 |
+| Validación y sanitización en Express | 4 |
+| Frontend React conectado al backend | 3 |
+| DOMPurify aplicado correctamente | 3 |
+| CSRF didáctico entendido y probado | 2 |
+| Lighthouse y checklist final | 2 |
+| **Total** | **20** |
 
-Has revisado una ruta completa de seguridad inicial para aplicaciones web modernas. El siguiente paso es aplicar esta checklist en un proyecto real o academico, documentar los hallazgos y repetir la auditoria despues de corregir.
+---
 
-## Continuacion formativa
+# Cierre de aprendizaje
 
-- Canal YouTube: https://www.youtube.com/@LideratecAcademy
-- Blog: https://lideratecacademy.com/
+Una aplicación segura no depende de una sola herramienta. HTTPS protege la comunicación, React ayuda con el renderizado seguro, DOMPurify sanitiza HTML, Express valida datos, Helmet.js agrega encabezados y Lighthouse permite auditar buenas prácticas. La seguridad se construye por capas.
 
+## Referencias técnicas sugeridas
+
+- Express - Security best practices: https://expressjs.com/en/advanced/best-practice-security.html
+- Helmet.js: https://helmetjs.github.io/
+- express-validator: https://express-validator.github.io/docs/
+- DOMPurify: https://github.com/cure53/DOMPurify
+- Lighthouse: https://developer.chrome.com/docs/lighthouse/overview
+- Let’s Encrypt: https://letsencrypt.org/
