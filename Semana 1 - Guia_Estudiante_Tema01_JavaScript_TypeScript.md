@@ -10,13 +10,24 @@
 
 ---
 
-## 1. Propósito de la práctica
+# 1. Propósito de la práctica
 
 En esta sesión prepararás un entorno local para ejecutar JavaScript y compilar TypeScript. Después trabajarás progresivamente con `let`, `const`, funciones flecha, template literals, destructuring, promesas, `async/await`, tipos de datos de TypeScript, interfaces, type aliases, clases, módulos, namespaces y `tsconfig.json`.
 
-La práctica está diseñada para que no solo copies código: en cada bloque tendrás que ejecutar, observar, modificar y comprobar resultados.
+La práctica está diseñada para que no ejecutes comandos de memoria. En cada etapa debes comprender:
 
-## 2. Resultado de aprendizaje observable
+1. **qué comando vas a ejecutar;**
+2. **en qué carpeta debes ejecutarlo;**
+3. **por qué es necesario;**
+4. **qué archivo, carpeta o estado modifica;**
+5. **qué resultado debes observar;**
+6. **cómo saber si funcionó correctamente.**
+
+> La meta no es copiar una secuencia de comandos. La meta es comprender el flujo completo: preparar el entorno, escribir código, compilarlo cuando corresponda y ejecutar el resultado.
+
+---
+
+# 2. Resultado de aprendizaje observable
 
 Al finalizar la sesión podrás:
 
@@ -27,12 +38,17 @@ Al finalizar la sesión podrás:
 5. Construir clases con modificadores `public`, `private` y `protected`, además de herencia.
 6. Organizar código TypeScript mediante módulos y namespaces.
 7. Configurar `tsconfig.json`, compilar archivos `.ts` y ejecutar el JavaScript generado.
+8. Explicar para qué sirve cada comando principal utilizado durante la práctica.
 
-## 3. Duración sugerida
+---
+
+# 3. Duración sugerida
 
 **180 minutos**, incluyendo una pausa breve y los puntos de control.
 
-## 4. Conocimientos previos mínimos
+---
+
+# 4. Conocimientos previos mínimos
 
 - Crear carpetas y archivos.
 - Abrir una terminal o consola.
@@ -41,198 +57,728 @@ Al finalizar la sesión podrás:
 
 No se requiere experiencia previa con TypeScript.
 
-## 5. Herramientas y recursos
+---
+
+# 5. Herramientas y recursos
 
 | Componente | Función en la práctica | ¿Debe instalarse? | Orden |
 |---|---|---:|---:|
 | Node.js LTS | Ejecutar JavaScript fuera del navegador y disponer de npm | Sí | 1 |
-| npm | Gestionar la dependencia de TypeScript | Se instala con Node.js | 2 |
+| npm | Gestionar el proyecto y sus dependencias | Se instala con Node.js | 2 |
 | TypeScript | Comprobar tipos y compilar `.ts` a `.js` | Sí, dentro del proyecto | 3 |
-| Visual Studio Code | Editar archivos y abrir una terminal integrada | Recomendado | 4 |
+| Visual Studio Code | Editar archivos y utilizar una terminal integrada | Recomendado | 4 |
 
-### Enlaces oficiales
+## Enlaces oficiales
 
 - Node.js: https://nodejs.org/en/download
 - TypeScript: https://www.typescriptlang.org/download/
 - Visual Studio Code: https://code.visualstudio.com/
 
-> **Referencia de laboratorio:** se recomienda utilizar la versión LTS que muestre la página oficial de Node.js. El número exacto de revisión puede cambiar con el tiempo.
+> **Referencia de laboratorio:** utiliza la versión marcada como **LTS** en el sitio oficial de Node.js. La numeración concreta cambia con el tiempo.
 
 ---
 
-# PARTE I - PREPARACIÓN COMPLETA DEL ENTORNO
+# 6. Antes de comenzar: cómo leer los comandos
 
-## 6. ¿Qué componente hace qué?
-
-### Node.js
-
-Node.js permite ejecutar JavaScript desde la terminal. En esta sesión lo utilizarás para ejecutar los archivos `.js` que escribas y los archivos `.js` que TypeScript genere después de compilar.
-
-### npm
-
-npm se instala junto con Node.js. Lo utilizarás para instalar TypeScript dentro del proyecto.
-
-### TypeScript
-
-TypeScript extiende JavaScript con sintaxis de tipos. Los archivos `.ts` se comprueban y se compilan para producir JavaScript ejecutable.
-
-### Visual Studio Code
-
-Es el editor recomendado para crear la estructura de carpetas, escribir código y utilizar una terminal integrada. Si tu laboratorio utiliza otro editor autorizado, puedes mantener los mismos archivos y comandos.
-
----
-
-## 7. Descargar e instalar Node.js
-
-### Paso 1. Abrir la página oficial
-
-**Objetivo:** localizar la distribución correcta de Node.js.
-
-**Dónde hacerlo:** navegador web.
-
-**Acción:**
-
-1. Abre https://nodejs.org/en/download
-2. Localiza la versión identificada como **LTS**.
-3. Selecciona la opción adecuada para tu sistema operativo y arquitectura.
-4. En Windows, utiliza el instalador precompilado cuando esté disponible.
-
-**Qué debería ocurrir:** se descargará un instalador de Node.js en la carpeta de descargas del sistema.
-
-**Cómo comprobarlo:** revisa que el archivo descargado provenga del dominio `nodejs.org`.
-
-**Si aparece un problema:** si la página muestra varias versiones, elige **LTS** para esta práctica y evita una versión marcada como EOL.
-
-### Paso 2. Ejecutar el instalador
-
-**Objetivo:** instalar Node.js y npm.
-
-**Dónde hacerlo:** carpeta de Descargas de Windows.
-
-**Acción:**
-
-1. Abre la carpeta **Descargas**.
-2. Identifica el instalador de Node.js que acabas de descargar.
-3. Ejecuta el instalador.
-4. Si Windows solicita permisos para realizar cambios, acepta únicamente si el instalador proviene del sitio oficial.
-5. Mantén los componentes predeterminados de Node.js y npm.
-6. No cambies rutas o componentes del laboratorio salvo indicación institucional.
-7. Completa la instalación.
-8. Si el sistema solicita reiniciar, guarda tu trabajo y reinicia antes de continuar.
-
-**Qué debería ocurrir:** Node.js quedará disponible desde una nueva terminal.
-
----
-
-## 8. Verificar Node.js y npm
-
-### Paso 3. Abrir una terminal nueva
-
-**Objetivo:** comprobar que la instalación quedó registrada correctamente.
-
-**Dónde hacerlo:** PowerShell, Símbolo del sistema o terminal integrada de Visual Studio Code.
-
-**Qué debes escribir:**
+Durante la práctica aparecerán comandos como estos:
 
 ```bash
 node -v
 npm -v
+npm init -y
+npm install typescript --save-dev
+npx tsc
 ```
 
-**Qué debería ocurrir:** cada comando debe mostrar un número de versión.
+No representan la misma clase de acción.
 
-**Cómo comprobarlo:** si ambos comandos responden con una versión, el entorno base está listo.
+| Elemento | Qué representa |
+|---|---|
+| `node` | Ejecuta JavaScript o consulta información de Node.js |
+| `npm` | Administra un proyecto Node y sus dependencias |
+| `npx` | Ejecuta una herramienta instalada dentro del proyecto |
+| `tsc` | Compilador de TypeScript |
+| `mkdir` | Crea una carpeta |
+| `cd` | Cambia la carpeta actual de la terminal |
+| `-v` / `--version` | Solicita información de versión |
 
-**Si aparece un problema:**
+## 6.1. Idea clave: la terminal siempre está ubicada en una carpeta
 
-- Si aparece "node no se reconoce" o un mensaje equivalente, cierra todas las terminales y abre una nueva.
-- Si continúa el error, reinicia Windows y vuelve a ejecutar los comandos.
-- Si todavía falla, revisa la instalación antes de continuar.
+Un error muy frecuente consiste en escribir un comando correcto desde una carpeta incorrecta.
 
----
-
-## 9. Instalar Visual Studio Code
-
-Si ya tienes un editor autorizado, puedes continuar con él. Si no lo tienes:
-
-1. Abre https://code.visualstudio.com/
-2. Selecciona la descarga correspondiente a tu sistema operativo.
-3. Ejecuta el instalador descargado.
-4. Mantén la configuración predeterminada del laboratorio.
-5. Abre Visual Studio Code al finalizar.
-
-**Comprobación:** debes poder abrir una carpeta, crear archivos y abrir una terminal desde el editor.
-
----
-
-## 10. Crear el proyecto de la sesión
-
-### Paso 4. Crear la carpeta principal
-
-**Objetivo:** disponer de una estructura única para JavaScript y TypeScript.
-
-**Dónde hacerlo:** terminal.
-
-```bash
-mkdir tema01-js-ts
-cd tema01-js-ts
-```
-
-**Qué debería ocurrir:** la terminal debe quedar ubicada dentro de `tema01-js-ts`.
-
-### Paso 5. Inicializar npm
+Por ejemplo:
 
 ```bash
 npm init -y
 ```
 
-Nota: en caso salga error de bloqueo por politicas de window:
-"PowerShell está bloqueando el script npm.ps1 por la política de ejecución de Windows:"
-En la misma terminal de VS Code, ejecuta:
-```bash
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+crea `package.json` **en la carpeta donde se encuentre la terminal en ese momento**.
+
+Por eso, antes de ejecutar comandos del proyecto, debes saber dónde estás.
+
+### En PowerShell
+
+```powershell
+Get-Location
 ```
 
-**Qué debería ocurrir:** se creará el archivo `package.json`.
+### En Símbolo del sistema
 
-**Cómo comprobarlo:** abre la carpeta en Visual Studio Code y localiza `package.json`.
+```bat
+cd
+```
 
-### Paso 6. Instalar TypeScript dentro del proyecto
+Ambos comandos permiten comprobar la ubicación actual.
+
+---
+
+# PARTE I - PREPARACIÓN COMPLETA DEL ENTORNO
+
+# 7. ¿Qué componente hace qué?
+
+## 7.1. Node.js
+
+Node.js permite ejecutar JavaScript desde una terminal.
+
+En esta sesión se utilizará para dos situaciones:
+
+1. ejecutar directamente los ejemplos `.js`;
+2. ejecutar los `.js` que TypeScript genere dentro de `dist`.
+
+Ejemplo:
+
+```bash
+node js/01-variables.js
+```
+
+Aquí Node.js recibe como entrada un archivo JavaScript y lo ejecuta.
+
+---
+
+## 7.2. npm
+
+npm se instala junto con Node.js.
+
+En esta práctica se utilizará para:
+
+- crear el archivo `package.json`;
+- instalar TypeScript dentro del proyecto;
+- registrar TypeScript como dependencia de desarrollo.
+
+npm **no es el compilador de TypeScript**. Su función aquí es administrar el proyecto y sus paquetes.
+
+---
+
+## 7.3. TypeScript
+
+TypeScript permite escribir JavaScript con información de tipos.
+
+El compilador `tsc` realizará dos tareas importantes:
+
+1. comprobar errores de tipos;
+2. generar JavaScript a partir de los archivos `.ts`.
+
+El flujo será:
+
+```text
+src/tipos.ts
+     |
+     | npx tsc
+     v
+dist/tipos.js
+     |
+     | node dist/tipos.js
+     v
+resultado en consola
+```
+
+---
+
+## 7.4. Visual Studio Code
+
+Visual Studio Code será utilizado para:
+
+- abrir la carpeta del proyecto;
+- crear archivos;
+- editar código;
+- visualizar la estructura de carpetas;
+- abrir una terminal integrada.
+
+---
+
+# 8. Descargar e instalar Node.js
+
+## Paso 1. Abrir la página oficial
+
+**Objetivo:** localizar una versión estable de Node.js.
+
+**Dónde hacerlo:** navegador web.
+
+### Acción
+
+1. Abre https://nodejs.org/en/download
+2. Localiza la versión identificada como **LTS**.
+3. Selecciona la opción adecuada para tu sistema operativo.
+4. En Windows, utiliza el instalador correspondiente a tu arquitectura.
+
+### ¿Por qué utilizamos LTS?
+
+LTS significa *Long Term Support*. Para una práctica académica interesa una versión estable y con soporte, no una versión experimental o fuera de mantenimiento.
+
+### Qué debería ocurrir
+
+El instalador será descargado en la carpeta de descargas de tu sistema.
+
+### Cómo comprobarlo
+
+Verifica que el archivo provenga del dominio oficial:
+
+```text
+nodejs.org
+```
+
+---
+
+## Paso 2. Ejecutar el instalador
+
+**Objetivo:** instalar Node.js y npm.
+
+### Acción
+
+1. Abre la carpeta **Descargas**.
+2. Ubica el instalador descargado.
+3. Ejecuta el instalador.
+4. Si Windows solicita autorización para realizar cambios, comprueba que el instalador sea el descargado desde el sitio oficial.
+5. Mantén los componentes predeterminados de Node.js y npm.
+6. Completa la instalación.
+7. Si el instalador solicita reiniciar el equipo, guarda tu trabajo y reinicia.
+
+### Qué debería ocurrir
+
+Al terminar, Windows deberá poder localizar los comandos:
+
+```text
+node
+npm
+```
+
+desde una terminal nueva.
+
+---
+
+# 9. Verificar Node.js y npm
+
+Abre una **terminal nueva** después de instalar Node.js.
+
+Esto es importante porque una terminal abierta antes de la instalación puede conservar una configuración anterior de las variables del sistema.
+
+---
+
+## Paso 3. Comprobar Node.js
+
+Ejecuta:
+
+```bash
+node -v
+```
+
+### ¿Qué hace este comando?
+
+- `node` llama al ejecutable de Node.js.
+- `-v` solicita únicamente su versión.
+- No crea archivos.
+- No instala nada.
+- No ejecuta todavía tu proyecto.
+
+### ¿Por qué lo ejecutamos?
+
+Porque antes de escribir código debemos comprobar que la terminal puede encontrar Node.js.
+
+Si este comando falla, más adelante también fallará:
+
+```bash
+node archivo.js
+```
+
+### Resultado esperado
+
+Algo similar a:
+
+```text
+vXX.XX.X
+```
+
+El número exacto puede variar.
+
+---
+
+## Paso 3.1. Comprobar npm
+
+Ejecuta:
+
+```bash
+npm -v
+```
+
+### ¿Qué hace?
+
+Consulta la versión de npm instalada junto con Node.js.
+
+### ¿Por qué lo necesitamos?
+
+Más adelante utilizaremos npm para:
+
+```text
+crear package.json
+instalar TypeScript
+registrar dependencias
+```
+
+### Resultado esperado
+
+```text
+XX.X.X
+```
+
+---
+
+## Punto de control
+
+| Comando | Resultado correcto |
+|---|---|
+| `node -v` | muestra una versión |
+| `npm -v` | muestra una versión |
+
+No continúes si alguno de los dos comandos no funciona.
+
+---
+
+# 10. Instalar Visual Studio Code
+
+Si ya dispones de un editor autorizado, puedes utilizarlo.
+
+Si no:
+
+1. Abre https://code.visualstudio.com/
+2. Descarga la versión correspondiente a tu sistema operativo.
+3. Ejecuta el instalador.
+4. Mantén la configuración predeterminada del laboratorio.
+5. Abre Visual Studio Code.
+
+## Comprobación
+
+Debes poder:
+
+- abrir una carpeta;
+- crear un archivo;
+- abrir una terminal.
+
+---
+
+# 11. Crear el proyecto de la sesión
+
+Esta sección es fundamental. A partir de aquí, la **ubicación de la terminal** importa.
+
+---
+
+## Paso 4. Crear la carpeta principal
+
+Ubícate primero en la carpeta donde deseas guardar la práctica.
+
+Ejecuta:
+
+```bash
+mkdir tema01-js-ts
+```
+
+### ¿Qué significa?
+
+`mkdir` proviene de *make directory*.
+
+El comando crea una carpeta llamada:
+
+```text
+tema01-js-ts
+```
+
+### ¿Qué modifica?
+
+Crea una carpeta física en el disco.
+
+### ¿Qué NO hace?
+
+No entra automáticamente dentro de la carpeta.
+
+---
+
+## Paso 4.1. Entrar en la carpeta
+
+Ejecuta:
+
+```bash
+cd tema01-js-ts
+```
+
+### ¿Qué significa `cd`?
+
+`cd` significa *change directory*.
+
+La terminal cambia su ubicación actual hacia:
+
+```text
+tema01-js-ts
+```
+
+### ¿Por qué es necesario?
+
+Los comandos posteriores crearán archivos en la ubicación actual.
+
+Si ejecutaras:
+
+```bash
+npm init -y
+```
+
+fuera de `tema01-js-ts`, `package.json` se crearía en otra carpeta.
+
+### Cómo comprobarlo
+
+PowerShell:
+
+```powershell
+Get-Location
+```
+
+Símbolo del sistema:
+
+```bat
+cd
+```
+
+La ruta mostrada debe terminar en:
+
+```text
+tema01-js-ts
+```
+
+---
+
+# 12. Inicializar npm
+
+Desde la raíz de `tema01-js-ts`, ejecuta:
+
+```bash
+npm init -y
+```
+
+## ¿Qué significa cada parte?
+
+| Parte | Significado |
+|---|---|
+| `npm` | ejecuta el gestor de paquetes |
+| `init` | inicializa un proyecto npm |
+| `-y` | acepta valores iniciales predeterminados |
+
+## ¿Por qué ejecutamos este comando?
+
+Porque necesitamos que la carpeta sea reconocida como un proyecto administrado por npm.
+
+El archivo principal que aparecerá será:
+
+```text
+package.json
+```
+
+## ¿Qué es `package.json`?
+
+Es el archivo que describe el proyecto.
+
+Puede almacenar, entre otros datos:
+
+- nombre;
+- versión;
+- scripts;
+- dependencias;
+- dependencias de desarrollo.
+
+## Resultado esperado
+
+```text
+tema01-js-ts/
+  package.json
+```
+
+## Cómo comprobarlo
+
+En Visual Studio Code debe aparecer `package.json` en la raíz.
+
+Ábrelo. Deberás observar una estructura JSON.
+
+---
+
+# 13. Si PowerShell bloquea `npm.ps1`
+
+En Windows puede aparecer un mensaje parecido a:
+
+```text
+npm.ps1 cannot be loaded because running scripts is disabled
+```
+
+Este mensaje no significa necesariamente que npm esté mal instalado.
+
+Significa que PowerShell está aplicando una política de ejecución a scripts.
+
+---
+
+## 13.1. Primero diagnostica
+
+Ejecuta:
+
+```powershell
+Get-ExecutionPolicy
+```
+
+### ¿Qué hace?
+
+Muestra la política efectiva de la sesión.
+
+No modifica la configuración.
+
+Luego puedes ejecutar:
+
+```powershell
+Get-ExecutionPolicy -List
+```
+
+### ¿Qué hace?
+
+Muestra las políticas configuradas para distintos ámbitos.
+
+Tampoco modifica nada.
+
+---
+
+## 13.2. Alternativa recomendada en equipos institucionales
+
+Si PowerShell bloquea `npm.ps1`, puedes abrir una terminal de **Símbolo del sistema / Command Prompt** en Visual Studio Code y volver a ejecutar:
+
+```bat
+npm -v
+npm init -y
+```
+
+### ¿Por qué esta alternativa es útil?
+
+Porque el bloqueo corresponde a la política de PowerShell.
+
+Cambiar de terminal permite continuar sin modificar una política de seguridad del equipo.
+
+---
+
+## 13.3. Alternativa temporal en PowerShell
+
+Utilízala únicamente si el docente o la institución lo autoriza.
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+```
+
+### ¿Qué hace?
+
+- `Set-ExecutionPolicy`: solicita modificar la política de ejecución.
+- `RemoteSigned`: permite scripts locales y aplica requisitos adicionales a determinados scripts descargados.
+- `-Scope Process`: limita el cambio a **la terminal actual**.
+
+### ¿Por qué se prefiere `Process` en una práctica?
+
+Porque el cambio no queda configurado permanentemente para el usuario.
+
+Cuando se cierre esa sesión de PowerShell, el ámbito `Process` deja de aplicarse.
+
+Después vuelve a comprobar:
+
+```powershell
+npm -v
+```
+
+> No modifiques políticas de equipo institucionales ni utilices cambios de alcance `LocalMachine` sin autorización.
+
+---
+
+# 14. Instalar TypeScript dentro del proyecto
+
+Comprueba primero que sigues en:
+
+```text
+tema01-js-ts
+```
+
+Luego ejecuta:
 
 ```bash
 npm install typescript --save-dev
 ```
 
-**Qué debería ocurrir:** se crearán `node_modules`, `package-lock.json` y una dependencia de desarrollo de TypeScript en `package.json`.
+## ¿Qué significa cada parte?
 
-**Cómo comprobarlo:**
+| Parte | Función |
+|---|---|
+| `npm` | ejecuta el gestor de paquetes |
+| `install` | descarga e instala un paquete |
+| `typescript` | paquete que deseamos instalar |
+| `--save-dev` | registra el paquete como dependencia de desarrollo |
+
+## ¿Por qué TypeScript se instala dentro del proyecto?
+
+Porque así cada proyecto puede trabajar con su propia versión de TypeScript.
+
+Esto evita depender de una instalación global distinta en cada computadora.
+
+## ¿Qué modifica este comando?
+
+Después de ejecutarlo aparecerán normalmente:
+
+```text
+tema01-js-ts/
+  node_modules/
+  package-lock.json
+  package.json
+```
+
+Y `package.json` incorporará una sección similar a:
+
+```json
+"devDependencies": {
+  "typescript": "..."
+}
+```
+
+## ¿Qué significa cada nuevo elemento?
+
+### `node_modules/`
+
+Contiene los paquetes instalados físicamente.
+
+No debes editar manualmente esta carpeta.
+
+### `package-lock.json`
+
+Registra las versiones concretas que npm resolvió para el proyecto.
+
+### `devDependencies`
+
+Indica herramientas que se utilizan para desarrollar o compilar el proyecto.
+
+TypeScript aparece aquí porque lo necesitamos durante el desarrollo.
+
+---
+
+# 15. Verificar TypeScript
+
+Ejecuta:
 
 ```bash
 npx tsc --version
 ```
 
-Debe mostrarse una versión de TypeScript.
+## ¿Por qué utilizamos `npx`?
 
-### Paso 7. Crear `tsconfig.json`
+TypeScript fue instalado dentro del proyecto.
+
+`npx` permite ejecutar la herramienta local sin depender de una instalación global.
+
+## ¿Qué significa `tsc`?
+
+`tsc` significa:
+
+```text
+TypeScript Compiler
+```
+
+## ¿Qué hace `--version`?
+
+Solo consulta la versión.
+
+No compila todavía ningún archivo.
+
+## Resultado esperado
+
+```text
+Version X.X.X
+```
+
+---
+
+# 16. Crear `tsconfig.json`
+
+Ejecuta:
 
 ```bash
 npx tsc --init
 ```
 
-**Qué debería ocurrir:** aparecerá el archivo `tsconfig.json` en la raíz del proyecto.
+## ¿Qué hace?
+
+El compilador TypeScript crea un archivo:
+
+```text
+tsconfig.json
+```
+
+## ¿Compila el proyecto?
+
+No.
+
+`--init` solamente crea una configuración inicial.
+
+## ¿Por qué necesitamos este archivo?
+
+Porque `tsconfig.json` permitirá indicar:
+
+- dónde estará el código TypeScript;
+- dónde se generará JavaScript;
+- qué nivel de validación utilizar;
+- qué versión de JavaScript producir;
+- cómo se manejarán los módulos.
+
+## Diferencia importante
+
+```text
+npm init -y
+    -> crea package.json
+
+npx tsc --init
+    -> crea tsconfig.json
+```
+
+No son equivalentes.
 
 ---
 
-## 11. Configurar la estructura `src` y `dist`
+# 17. Crear la estructura de carpetas
 
-### Paso 8. Crear carpetas
+Desde la raíz:
 
 ```bash
 mkdir js
 mkdir src
 ```
 
-Ahora crea manualmente dentro de `src` estas carpetas:
+## ¿Qué hace cada comando?
+
+```bash
+mkdir js
+```
+
+crea la carpeta para ejemplos JavaScript.
+
+```bash
+mkdir src
+```
+
+crea la carpeta para archivos TypeScript fuente.
+
+Después crea:
 
 ```text
 src/
@@ -240,11 +786,36 @@ src/
   services/
 ```
 
-La carpeta `dist` será generada por TypeScript al compilar.
+En Windows puedes hacerlo con:
 
-### Paso 9. Ajustar `tsconfig.json`
+```bat
+mkdir src\models
+mkdir src\services
+```
 
-Reemplaza el contenido principal de `tsconfig.json` por esta configuración de laboratorio:
+## ¿Por qué todavía no creamos `dist`?
+
+Porque queremos que `dist` aparezca como **resultado de la compilación**.
+
+La estructura esperada antes de compilar será:
+
+```text
+tema01-js-ts/
+  js/
+  node_modules/
+  src/
+    models/
+    services/
+  package-lock.json
+  package.json
+  tsconfig.json
+```
+
+---
+
+# 18. Configurar `tsconfig.json`
+
+Abre `tsconfig.json` y utiliza esta configuración de laboratorio:
 
 ```json
 {
@@ -253,51 +824,117 @@ Reemplaza el contenido principal de `tsconfig.json` por esta configuración de l
     "module": "CommonJS",
     "rootDir": "./src",
     "outDir": "./dist",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    "strict": true
   },
   "include": ["src/**/*.ts"]
 }
 ```
 
-### ¿Qué controla esta configuración?
+## ¿Qué controla cada propiedad?
 
-- `rootDir`: indica dónde está el código TypeScript fuente.
-- `outDir`: indica dónde se guardará el JavaScript compilado.
-- `strict`: activa comprobaciones estrictas de tipos.
-- `target`: establece una versión moderna de JavaScript como salida.
-- `module`: permite que el ejemplo de `import` y `export` pueda ejecutarse con Node.js en esta práctica.
+### `target`
 
-### Punto de control del entorno
+```json
+"target": "ES2022"
+```
 
-- [ ] Instalé Node.js LTS.
-- [ ] `node -v` muestra una versión.
-- [ ] `npm -v` muestra una versión.
-- [ ] Creé `tema01-js-ts`.
-- [ ] Ejecuté `npm init -y`.
-- [ ] Instalé TypeScript dentro del proyecto.
+Indica la versión de JavaScript que TypeScript utilizará como salida.
+
+---
+
+### `module`
+
+```json
+"module": "CommonJS"
+```
+
+Controla cómo se representarán los módulos en el JavaScript generado.
+
+En esta práctica nos permite utilizar:
+
+```text
+import
+export
+```
+
+en TypeScript y posteriormente ejecutar el resultado con Node.js.
+
+---
+
+### `rootDir`
+
+```json
+"rootDir": "./src"
+```
+
+Indica:
+
+> “Mi código TypeScript fuente está dentro de `src`”.
+
+---
+
+### `outDir`
+
+```json
+"outDir": "./dist"
+```
+
+Indica:
+
+> “El JavaScript compilado debe guardarse dentro de `dist`”.
+
+---
+
+### `strict`
+
+```json
+"strict": true
+```
+
+Activa validaciones estrictas de tipos.
+
+Es importante para que el estudiante pueda observar errores antes de ejecutar el programa.
+
+---
+
+### `include`
+
+```json
+"include": ["src/**/*.ts"]
+```
+
+Indica que se deben considerar los archivos `.ts` ubicados en `src` y sus subcarpetas.
+
+---
+
+## Punto de control del entorno
+
+- [ ] `node -v` funciona.
+- [ ] `npm -v` funciona.
+- [ ] Estoy ubicado dentro de `tema01-js-ts`.
+- [ ] Existe `package.json`.
+- [ ] Existe `node_modules`.
+- [ ] Existe `package-lock.json`.
 - [ ] `npx tsc --version` funciona.
 - [ ] Existe `tsconfig.json`.
-- [ ] Existen las carpetas `js`, `src/models` y `src/services`.
-
-No continúes si `npx tsc --version` produce un error.
+- [ ] Existen `js`, `src/models` y `src/services`.
+- [ ] Comprendo que `dist` aparecerá al compilar.
 
 ---
 
 # PARTE II - JAVASCRIPT MODERNO ES6+
 
-## Bloque 1. `var`, `let` y `const`
+# Bloque 1. `var`, `let` y `const`
 
 **Objetivo:** diferenciar alcance, reasignación y uso recomendado.
 
-**Concepto trabajado:** `var`, `let`, `const`.
+Crea:
 
-**Explicación breve:** `var` tiene alcance de función o global; `let` y `const` respetan el alcance de bloque. `let` admite reasignación y `const` no permite reasignar la referencia declarada.
+```text
+js/01-variables.js
+```
 
-### Ejemplo guiado
-
-Crea el archivo `js/01-variables.js`:
+con:
 
 ```javascript
 function calcularTotal(productos) {
@@ -320,48 +957,58 @@ const carrito = [
 console.log(`Total a pagar: S/ ${calcularTotal(carrito)}`);
 ```
 
-### Paso a paso
+## ¿Por qué se utiliza cada declaración?
 
-1. `total` se declara con `let` porque cambia durante el recorrido.
-2. `i` se declara con `let` porque cambia en cada iteración.
-3. `precio` se declara con `const` porque no necesita reasignarse dentro de esa vuelta.
-4. `carrito` se declara con `const` porque la referencia al array no se reasigna.
+- `let total`: cambia mientras se recorren los productos.
+- `let i`: cambia en cada iteración.
+- `const precio`: no necesita reasignarse durante esa vuelta.
+- `const carrito`: no se reasigna la referencia del array.
 
-### Ejecutar
+## Ejecutar
+
+Desde la raíz:
 
 ```bash
 node js/01-variables.js
 ```
 
-**Resultado esperado:**
+## ¿Qué hace este comando?
+
+`node` recibe la ruta de un archivo JavaScript y lo ejecuta.
+
+Aquí no utilizamos `npx tsc` porque el archivo ya es `.js`.
+
+## Resultado esperado
 
 ```text
 Total a pagar: S/ 2950
 ```
 
-### Actividad para desarrollar
+## Actividad
 
-Agrega un cuarto producto con nombre `Monitor` y precio `900`. Ejecuta otra vez y registra el nuevo total.
+Agrega:
 
-**Espacio para responder:**
+```javascript
+{ nombre: "Monitor", precio: 900 }
+```
 
-- ¿Qué variable sí necesita reasignación?
-- ¿Qué declaracion usarías para una configuración que no cambiará?
-- ¿Por qué se evita `var` en este ejemplo?
+y vuelve a ejecutar el mismo comando.
 
-**Error frecuente:** intentar reasignar una variable declarada con `const`.
+### ¿Por qué hay que volver a ejecutar?
 
-**Mini reto:** crea una constante `IGV` con el valor `0.18` y calcula solo el monto del IGV del total.
+Porque modificar el archivo no ejecuta automáticamente el programa.
+
+Node.js debe leer nuevamente el archivo actualizado.
 
 ---
 
-## Bloque 2. Funciones flecha y template literals
+# Bloque 2. Funciones flecha y template literals
 
-**Objetivo:** transformar funciones breves y generar mensajes dinámicos.
+Crea:
 
-### Ejemplo guiado
-
-Crea `js/02-funciones-template.js`:
+```text
+js/02-funciones-template.js
+```
 
 ```javascript
 const calcularDescuento = (precio, porcentaje) => {
@@ -375,37 +1022,37 @@ const descuento = calcularDescuento(precio, 0.10);
 console.log(`${producto}: precio S/ ${precio}, descuento S/ ${descuento}`);
 ```
 
-### Paso a paso
-
-1. `calcularDescuento` es una función flecha.
-2. Los backticks permiten construir una cadena con `${...}`.
-3. La expresión `${descuento}` inserta el valor calculado.
-
-### Ejecutar
+Ejecuta:
 
 ```bash
 node js/02-funciones-template.js
 ```
 
-**Resultado esperado:**
+## ¿Por qué utilizamos nuevamente `node`?
+
+Porque seguimos ejecutando JavaScript directamente.
+
+El comando significa:
+
+```text
+node + ruta_del_archivo
+```
+
+Resultado esperado:
 
 ```text
 Laptop: precio S/ 2500, descuento S/ 250
 ```
 
-### Actividad para desarrollar
-
-Modifica el descuento a `15%` y agrega una variable `precioFinal`.
-
-**Pregunta de comprobación:** ¿qué ventaja observas al usar template literals frente a concatenar muchas cadenas con `+`?
-
 ---
 
-## Bloque 3. Destructuring
+# Bloque 3. Destructuring
 
-**Objetivo:** extraer propiedades de objetos sin repetir continuamente `objeto.propiedad`.
+Crea:
 
-Crea `js/03-destructuring.js`:
+```text
+js/03-destructuring.js
+```
 
 ```javascript
 const producto = {
@@ -435,31 +1082,148 @@ Ejecuta:
 node js/03-destructuring.js
 ```
 
-**Resultado esperado:**
+## ¿Qué estamos validando?
 
-```text
-Producto: Smartphone
-Precio: S/ 1200
-Marca: Samsung
-```
+Que la ruta utilizada en el destructuring coincida con la estructura real del objeto.
 
-### Actividad para desarrollar
+Antes de ejecutar:
 
-Extrae también `garantia` usando destructuring y muéstrala en consola.
-
-### Error frecuente
-
-Confundir la ruta de una propiedad anidada. `marca` no está directamente dentro de `producto`; está dentro de `detalles`.
+1. guarda el archivo;
+2. comprueba que estás en la raíz del proyecto;
+3. ejecuta el comando.
 
 ---
 
-## Bloque 4. Promesas y `async/await`
 
-**Objetivo:** interpretar una operación asincrónica y manejar éxito o error.
+# Bloque 4. Promesas y `async/await`
 
-### Ejemplo 4A - Promesa
+## Ejemplo 4A - Comprender una Promesa paso a paso
 
-Crea `js/04-promesas.js`:
+**Objetivo:** comprender cómo JavaScript representa una operación cuyo resultado no se obtiene inmediatamente y cómo podemos reaccionar cuando dicha operación termina correctamente o produce un error.
+
+Antes de escribir código, debemos comprender el problema que queremos representar.
+
+Imagina que una aplicación necesita buscar un usuario en una base de datos o consultar información desde un servicio externo.
+
+El resultado normalmente **no está disponible de manera inmediata**.
+
+La aplicación realiza una solicitud, espera una respuesta y después pueden ocurrir dos situaciones:
+
+```text
+Operación asincrónica
+        |
+        v
+     Promise
+        |
+   +----+----+
+   |         |
+   v         v
+ Éxito      Error
+resolve    reject
+   |         |
+   v         v
+.then()   .catch()
+```
+
+Una `Promise` representa precisamente ese resultado que estará disponible posteriormente.
+
+---
+
+## 4A.1. ¿Qué es una Promise?
+
+Una `Promise` es un objeto que representa el resultado futuro de una operación.
+
+Por ejemplo, una operación puede necesitar:
+
+* consultar una API;
+* consultar una base de datos;
+* leer información;
+* esperar que termine otro proceso;
+* realizar una tarea que no produce un resultado inmediatamente.
+
+Cuando creamos una promesa, todavía no necesariamente conocemos su resultado.
+
+Por ello, una promesa puede encontrarse en tres estados.
+
+| Estado      | Significado                          |
+| ----------- | ------------------------------------ |
+| `pending`   | La operación todavía no ha terminado |
+| `fulfilled` | La operación terminó correctamente   |
+| `rejected`  | La operación terminó con un error    |
+
+Inicialmente una promesa se encuentra en:
+
+```text
+pending
+```
+
+Después puede pasar a:
+
+```text
+fulfilled
+```
+
+si la operación termina correctamente mediante:
+
+```javascript
+resolve(...)
+```
+
+o puede pasar a:
+
+```text
+rejected
+```
+
+si ocurre un problema mediante:
+
+```javascript
+reject(...)
+```
+
+Visualmente:
+
+```text
+                Promise
+                   |
+                   v
+                pending
+                   |
+             +-----+-----+
+             |           |
+             v           v
+          resolve      reject
+             |           |
+             v           v
+         fulfilled    rejected
+```
+
+---
+
+## 4A.2. Crear el archivo
+
+Dentro de la carpeta `js` crea el archivo:
+
+```text
+js/04-promesas.js
+```
+
+La estructura del proyecto debería verse aproximadamente así:
+
+```text
+tema01-js-ts/
+  js/
+    01-variables.js
+    02-funciones-template.js
+    03-destructuring.js
+    04-promesas.js
+```
+
+---
+
+## 4A.3. Código completo del ejemplo
+
+Escribe dentro de `js/04-promesas.js`:
 
 ```javascript
 function obtenerUsuario(id) {
@@ -495,85 +1259,1187 @@ obtenerUsuario(1)
   });
 ```
 
+Antes de ejecutar el programa, vamos a comprender qué realiza cada parte.
+
+---
+
+## 4A.4. Paso 1 - Crear la función `obtenerUsuario`
+
+Observa:
+
+```javascript
+function obtenerUsuario(id) {
+```
+
+Creamos una función llamada:
+
+```text
+obtenerUsuario
+```
+
+La función recibe un parámetro:
+
+```text
+id
+```
+
+Este identificador será utilizado para buscar un usuario.
+
+Por ejemplo:
+
+```javascript
+obtenerUsuario(1);
+```
+
+significa:
+
+> Buscar el usuario cuyo identificador es `1`.
+
+Mientras que:
+
+```javascript
+obtenerUsuario(2);
+```
+
+significa:
+
+> Buscar el usuario cuyo identificador es `2`.
+
+Si utilizamos:
+
+```javascript
+obtenerUsuario(99);
+```
+
+intentaremos encontrar un usuario cuyo identificador es `99`.
+
+En nuestro ejemplo ese usuario no existe.
+
+---
+
+## 4A.5. Paso 2 - Crear y devolver una Promise
+
+Dentro de la función encontramos:
+
+```javascript
+return new Promise((resolve, reject) => {
+```
+
+Esta línea es fundamental.
+
+La función `obtenerUsuario()` no devuelve inmediatamente un usuario.
+
+Devuelve una:
+
+```text
+Promise
+```
+
+Podemos interpretarla como:
+
+> La operación todavía está trabajando, pero posteriormente entregará un resultado o un error.
+
+La promesa recibe dos funciones importantes:
+
+```javascript
+resolve
+reject
+```
+
+---
+
+### ¿Qué hace `resolve`?
+
+`resolve` se utiliza cuando la operación termina correctamente.
+
+Por ejemplo:
+
+```javascript
+resolve(usuario);
+```
+
+significa:
+
+> La operación terminó correctamente y el resultado obtenido es `usuario`.
+
+Conceptualmente:
+
+```text
+Promise
+   |
+   v
+pending
+   |
+   v
+resolve(usuario)
+   |
+   v
+fulfilled
+```
+
+---
+
+### ¿Qué hace `reject`?
+
+`reject` se utiliza cuando la operación no puede completarse correctamente.
+
+Por ejemplo:
+
+```javascript
+reject(new Error("Usuario no encontrado"));
+```
+
+significa:
+
+> La operación terminó con un error.
+
+Conceptualmente:
+
+```text
+Promise
+   |
+   v
+pending
+   |
+   v
+reject(error)
+   |
+   v
+rejected
+```
+
+---
+
+## 4A.6. Paso 3 - Informar que comienza la operación
+
+Observa:
+
+```javascript
+console.log("Consultando usuarios...");
+```
+
+Este mensaje se ejecuta inmediatamente cuando comienza la función.
+
+Por eso será uno de los primeros mensajes que veremos en consola:
+
+```text
+Consultando usuarios...
+```
+
+En una aplicación real, un mensaje similar podría representar que el sistema está:
+
+* consultando una API;
+* buscando información;
+* consultando una base de datos;
+* esperando la respuesta de otro servicio.
+
+---
+
+## 4A.7. Paso 4 - Simular una operación que demora
+
+Observa:
+
+```javascript
+setTimeout(() => {
+```
+
+y posteriormente:
+
+```javascript
+}, 1000);
+```
+
+En este ejemplo utilizamos `setTimeout` para **simular que obtener la información requiere cierto tiempo**.
+
+El número:
+
+```text
+1000
+```
+
+representa:
+
+```text
+1000 milisegundos
+```
+
+que equivalen aproximadamente a:
+
+```text
+1 segundo
+```
+
+Por lo tanto, nuestro ejemplo simula este comportamiento:
+
+```text
+Solicitar usuario
+       |
+       v
+esperar aproximadamente
+     1 segundo
+       |
+       v
+obtener resultado
+```
+
+> `setTimeout` no representa por sí mismo una consulta a una base de datos. Lo utilizamos únicamente para simular una operación que tarda en responder.
+
+---
+
+## 4A.8. Paso 5 - Simular información disponible
+
+Dentro de `setTimeout` encontramos:
+
+```javascript
+const usuarios = {
+  1: { nombre: "María", edad: 25 },
+  2: { nombre: "Claudia", edad: 28 }
+};
+```
+
+Estamos utilizando un objeto JavaScript para representar datos disponibles.
+
+En nuestro ejemplo tenemos:
+
+```text
+ID 1 -> María
+ID 2 -> Claudia
+```
+
+No existe:
+
+```text
+ID 99
+```
+
+En una aplicación real estos datos podrían provenir de otro origen.
+
+---
+
+## 4A.9. Paso 6 - Buscar el usuario
+
+La siguiente instrucción es:
+
+```javascript
+const usuario = usuarios[id];
+```
+
+El valor de `id` dependerá de cómo llamemos a la función.
+
+Si ejecutamos:
+
+```javascript
+obtenerUsuario(1);
+```
+
+entonces:
+
+```text
+id = 1
+```
+
+Por lo tanto JavaScript buscará:
+
+```javascript
+usuarios[1]
+```
+
+y encontrará:
+
+```javascript
+{
+  nombre: "María",
+  edad: 25
+}
+```
+
+La variable:
+
+```javascript
+usuario
+```
+
+contendrá ese objeto.
+
+---
+
+## 4A.10. Paso 7 - Decidir si la operación terminó correctamente
+
+Ahora encontramos:
+
+```javascript
+if (usuario) {
+  resolve(usuario);
+} else {
+  reject(new Error("Usuario no encontrado"));
+}
+```
+
+Aquí existen dos posibles caminos.
+
+---
+
+### Camino 1 - El usuario existe
+
+Si encontramos el usuario:
+
+```javascript
+resolve(usuario);
+```
+
+La promesa termina correctamente.
+
+Conceptualmente:
+
+```text
+pending
+   |
+usuario encontrado
+   |
+   v
+resolve(usuario)
+   |
+   v
+fulfilled
+```
+
+Por ejemplo, si buscamos:
+
+```javascript
+obtenerUsuario(1);
+```
+
+obtendremos:
+
+```javascript
+{
+  nombre: "María",
+  edad: 25
+}
+```
+
+---
+
+### Camino 2 - El usuario no existe
+
+Si no encontramos el usuario:
+
+```javascript
+reject(new Error("Usuario no encontrado"));
+```
+
+La promesa termina con un error.
+
+Conceptualmente:
+
+```text
+pending
+   |
+usuario no encontrado
+   |
+   v
+reject(error)
+   |
+   v
+rejected
+```
+
+---
+
+# 4A.11. Consumir la Promise
+
+Hasta este momento hemos creado una función que devuelve una promesa.
+
+Ahora necesitamos utilizar su resultado.
+
+Observa:
+
+```javascript
+obtenerUsuario(1)
+```
+
+Estamos solicitando:
+
+```text
+Usuario con ID = 1
+```
+
+Como `obtenerUsuario()` devuelve una promesa, podemos indicar qué debe hacer el programa:
+
+* cuando la operación tenga éxito;
+* cuando ocurra un error;
+* cuando la operación termine.
+
+Para ello utilizamos:
+
+```text
+.then()
+.catch()
+.finally()
+```
+
+---
+
+## 4A.12. ¿Qué hace `.then()`?
+
+Observa:
+
+```javascript
+.then((usuario) => {
+  console.log(`Usuario: ${usuario.nombre}, edad: ${usuario.edad}`);
+})
+```
+
+`.then()` se ejecuta cuando la promesa termina correctamente.
+
+Eso ocurre cuando en nuestra función se ejecuta:
+
+```javascript
+resolve(usuario);
+```
+
+Existe una relación directa:
+
+```text
+resolve(usuario)
+       |
+       v
+    .then()
+```
+
+El valor enviado mediante:
+
+```javascript
+resolve(usuario);
+```
+
+es recibido por:
+
+```javascript
+.then((usuario) => {
+```
+
+Por eso dentro del `.then()` podemos escribir:
+
+```javascript
+usuario.nombre
+usuario.edad
+```
+
+En nuestro ejemplo los valores serán:
+
+```text
+usuario.nombre = María
+usuario.edad = 25
+```
+
+y la consola mostrará:
+
+```text
+Usuario: María, edad: 25
+```
+
+---
+
+## 4A.13. ¿Qué hace `.catch()`?
+
+Observa:
+
+```javascript
+.catch((error) => {
+  console.error("Error:", error.message);
+})
+```
+
+`.catch()` se ejecuta cuando la promesa termina con un error.
+
+Esto ocurre cuando utilizamos:
+
+```javascript
+reject(...)
+```
+
+Existe esta relación:
+
+```text
+reject(error)
+      |
+      v
+   .catch()
+```
+
+Por ejemplo:
+
+```javascript
+reject(new Error("Usuario no encontrado"));
+```
+
+produce un objeto de error.
+
+Ese objeto llega a:
+
+```javascript
+.catch((error) => {
+```
+
+y mediante:
+
+```javascript
+error.message
+```
+
+podemos obtener el mensaje:
+
+```text
+Usuario no encontrado
+```
+
+La consola mostrará:
+
+```text
+Error: Usuario no encontrado
+```
+
+---
+
+## 4A.14. ¿Qué hace `.finally()`?
+
+Finalmente encontramos:
+
+```javascript
+.finally(() => {
+  console.log("Consulta finalizada");
+});
+```
+
+`finally()` se ejecuta cuando la operación termina.
+
+Se ejecutará tanto si ocurrió:
+
+```text
+resolve
+```
+
+como si ocurrió:
+
+```text
+reject
+```
+
+Podemos interpretarlo así:
+
+```text
+              Promise
+                 |
+         +-------+-------+
+         |               |
+         v               v
+      resolve          reject
+         |               |
+         v               v
+      .then()          .catch()
+         |               |
+         +-------+-------+
+                 |
+                 v
+             .finally()
+```
+
+En nuestro ejemplo mostrará:
+
+```text
+Consulta finalizada
+```
+
+---
+
+# 4A.15. Ejecutar el caso exitoso
+
+Ahora sí ejecutaremos el programa.
+
+Comprueba primero que la terminal se encuentre dentro de:
+
+```text
+tema01-js-ts
+```
+
+Puedes verificarlo antes de continuar.
+
+Luego ejecuta:
+
+```bash
+node js/04-promesas.js
+```
+
+---
+
+## ¿Qué significa este comando?
+
+Tenemos dos partes:
+
+```text
+node
+```
+
+y:
+
+```text
+js/04-promesas.js
+```
+
+### `node`
+
+Solicita a Node.js ejecutar un archivo JavaScript.
+
+### `js/04-promesas.js`
+
+Es la ruta del archivo que queremos ejecutar.
+
+Por lo tanto:
+
+```bash
+node js/04-promesas.js
+```
+
+significa:
+
+> Node.js, ejecuta el archivo `04-promesas.js` que se encuentra dentro de la carpeta `js`.
+
+---
+
+# 4A.16. Resultado esperado
+
+Actualmente nuestro código contiene:
+
+```javascript
+obtenerUsuario(1)
+```
+
+El usuario con ID `1` sí existe.
+
+Por ello, primero debería aparecer:
+
+```text
+Consultando usuarios...
+```
+
+Después de aproximadamente un segundo:
+
+```text
+Usuario: María, edad: 25
+Consulta finalizada
+```
+
+La salida completa será aproximadamente:
+
+```text
+Consultando usuarios...
+Usuario: María, edad: 25
+Consulta finalizada
+```
+
+---
+
+# 4A.17. Comprender el orden de ejecución
+
+No memorices solamente la salida.
+
+Relaciona cada mensaje con la instrucción que lo produjo.
+
+---
+
+## Momento 1 - Comienza la operación
+
+Se ejecuta:
+
+```javascript
+console.log("Consultando usuarios...");
+```
+
+Aparece:
+
+```text
+Consultando usuarios...
+```
+
+En este momento podemos entender conceptualmente que la promesa se encuentra:
+
+```text
+pending
+```
+
+---
+
+## Momento 2 - La operación está esperando
+
+`setTimeout` está simulando una operación que tarda aproximadamente un segundo.
+
+Conceptualmente:
+
+```text
+Consultando usuarios...
+        |
+        v
+Promise pendiente
+        |
+        v
+espera aproximada
+        |
+        v
+continúa la operación
+```
+
+---
+
+## Momento 3 - Se busca el usuario
+
+Se ejecuta:
+
+```javascript
+const usuario = usuarios[id];
+```
+
+Como hemos llamado:
+
+```javascript
+obtenerUsuario(1)
+```
+
+entonces:
+
+```text
+id = 1
+```
+
+El usuario existe.
+
+Por ello se ejecuta:
+
+```javascript
+resolve(usuario);
+```
+
+La promesa termina correctamente.
+
+---
+
+## Momento 4 - Se ejecuta `.then()`
+
+Como ocurrió:
+
+```javascript
+resolve(usuario);
+```
+
+se ejecuta:
+
+```javascript
+.then(...)
+```
+
+y aparece:
+
+```text
+Usuario: María, edad: 25
+```
+
+---
+
+## Momento 5 - Se ejecuta `.finally()`
+
+Después se ejecuta:
+
+```javascript
+.finally(...)
+```
+
+y aparece:
+
+```text
+Consulta finalizada
+```
+
+---
+
+# 4A.18. Flujo completo del caso exitoso
+
+```text
+obtenerUsuario(1)
+        |
+        v
+new Promise(...)
+        |
+        v
+pending
+        |
+        v
+"Consultando usuarios..."
+        |
+        v
+espera aproximada
+de 1 segundo
+        |
+        v
+buscar usuarios[1]
+        |
+        v
+usuario encontrado
+        |
+        v
+resolve(usuario)
+        |
+        v
+fulfilled
+        |
+        v
+.then(usuario)
+        |
+        v
+"Usuario: María, edad: 25"
+        |
+        v
+.finally()
+        |
+        v
+"Consulta finalizada"
+```
+
+---
+
+# 4A.19. Probar ahora el camino de error
+
+Para comprender completamente una promesa debemos probar también qué sucede cuando la operación falla.
+
+Busca al final del archivo:
+
+```javascript
+obtenerUsuario(1)
+```
+
+y cámbialo por:
+
+```javascript
+obtenerUsuario(99)
+```
+
+¿Por qué utilizamos `99`?
+
+Porque dentro de nuestro objeto solo tenemos:
+
+```text
+1 -> María
+2 -> Claudia
+```
+
+Por lo tanto:
+
+```text
+99
+```
+
+no existe.
+
+Guarda el archivo.
+
+Vuelve a ejecutar:
+
+```bash
+node js/04-promesas.js
+```
+
+---
+
+## Resultado esperado
+
+Primero aparecerá:
+
+```text
+Consultando usuarios...
+```
+
+Después de aproximadamente un segundo:
+
+```text
+Error: Usuario no encontrado
+Consulta finalizada
+```
+
+---
+
+# 4A.20. ¿Qué ocurrió internamente?
+
+Cuando ejecutamos:
+
+```javascript
+obtenerUsuario(99)
+```
+
+JavaScript intenta encontrar:
+
+```javascript
+usuarios[99]
+```
+
+Como no existe, la condición:
+
+```javascript
+if (usuario)
+```
+
+no se cumple.
+
+Entonces se ejecuta:
+
+```javascript
+reject(new Error("Usuario no encontrado"));
+```
+
+Eso provoca que se ejecute:
+
+```javascript
+.catch(...)
+```
+
+y no:
+
+```javascript
+.then(...)
+```
+
+El flujo será:
+
+```text
+obtenerUsuario(99)
+        |
+        v
+Promise
+        |
+        v
+pending
+        |
+        v
+buscar usuarios[99]
+        |
+        v
+no existe
+        |
+        v
+reject(error)
+        |
+        v
+rejected
+        |
+        v
+.catch(error)
+        |
+        v
+"Error: Usuario no encontrado"
+        |
+        v
+.finally()
+        |
+        v
+"Consulta finalizada"
+```
+
+---
+
+# 4A.21. Comparar éxito y error
+
+| Situación             | Acción dentro de la Promise | Método que procesa el resultado |
+| --------------------- | --------------------------- | ------------------------------- |
+| Usuario encontrado    | `resolve(usuario)`          | `.then()`                       |
+| Usuario no encontrado | `reject(error)`             | `.catch()`                      |
+| La operación termina  | éxito o error               | `.finally()`                    |
+
+Podemos resumirlo así:
+
+```text
+                 Promise
+                    |
+                    v
+                 pending
+                    |
+          +---------+---------+
+          |                   |
+          v                   v
+       resolve             reject
+          |                   |
+          v                   v
+      fulfilled            rejected
+          |                   |
+          v                   v
+       .then()             .catch()
+          |                   |
+          +---------+---------+
+                    |
+                    v
+                .finally()
+```
+
+---
+
+# 4A.22. Actividad de comprobación
+
+Realiza las siguientes pruebas.
+
+---
+
+## Prueba 1
+
+Utiliza:
+
+```javascript
+obtenerUsuario(1)
+```
+
 Ejecuta:
 
 ```bash
 node js/04-promesas.js
 ```
 
-### Qué debes observar
+Registra:
 
-1. Primero aparece el mensaje de consulta.
-2. Hay una espera aproximada de un segundo.
-3. La promesa se resuelve si el usuario existe.
-4. `finally` se ejecuta al terminar.
+* nombre obtenido;
+* edad obtenida;
+* si se ejecutó `.then()` o `.catch()`.
 
-### Ejemplo 4B - La misma operación con `async/await`
+---
 
-Crea `js/05-async-await.js`:
+## Prueba 2
+
+Utiliza:
 
 ```javascript
-function obtenerUsuario(id) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const usuarios = {
-        1: { nombre: "María", edad: 25 },
-        2: { nombre: "Claudia", edad: 28 }
-      };
+obtenerUsuario(2)
+```
 
-      const usuario = usuarios[id];
-      usuario ? resolve(usuario) : reject(new Error("Usuario no encontrado"));
-    }, 1000);
-  });
-}
+Ejecuta nuevamente:
 
-async function mostrarUsuario(id) {
-  try {
-    const usuario = await obtenerUsuario(id);
-    console.log(`Usuario: ${usuario.nombre}, edad: ${usuario.edad}`);
-  } catch (error) {
-    console.error("Error:", error.message);
-  }
-}
+```bash
+node js/04-promesas.js
+```
 
-mostrarUsuario(2);
+Registra el resultado.
+
+---
+
+## Prueba 3
+
+Utiliza:
+
+```javascript
+obtenerUsuario(99)
 ```
 
 Ejecuta:
 
 ```bash
-node js/05-async-await.js
+node js/04-promesas.js
 ```
 
-### Actividad para desarrollar
+Identifica:
 
-Cambia `mostrarUsuario(2)` por `mostrarUsuario(99)`.
+* qué mensaje aparece;
+* qué método procesa el error;
+* si `finally()` continúa ejecutándose.
 
-**Responde:**
+---
 
-- ¿Qué bloque se ejecuta cuando el usuario no existe?
-- ¿Qué palabra clave espera el resultado de la promesa?
-- ¿Qué ventaja de lectura encuentras respecto a encadenar varios `.then()`?
+# 4A.23. Mini reto
 
-### Punto de control JavaScript
+Agrega un nuevo usuario:
 
-- [ ] Ejecuté los cinco archivos JavaScript.
-- [ ] Puedo explicar cuándo usar `let` y cuándo usar `const`.
-- [ ] Usé una función flecha.
-- [ ] Usé template literals.
-- [ ] Extraje datos mediante destructuring.
-- [ ] Provocé una resolución y un rechazo de una promesa.
-- [ ] Probé `async/await` con `try/catch`.
+```javascript
+3: { nombre: "Carlos", edad: 31 }
+```
+
+El objeto debería quedar similar a:
+
+```javascript
+const usuarios = {
+  1: { nombre: "María", edad: 25 },
+  2: { nombre: "Claudia", edad: 28 },
+  3: { nombre: "Carlos", edad: 31 }
+};
+```
+
+Después ejecuta:
+
+```javascript
+obtenerUsuario(3)
+```
+
+y comprueba el resultado.
+
+---
+
+# 4A.24. Preguntas de comprobación
+
+Responde con tus propias palabras:
+
+1. ¿Qué representa una `Promise`?
+2. ¿En qué estado se encuentra inicialmente una promesa?
+3. ¿Qué significa el estado `fulfilled`?
+4. ¿Qué significa el estado `rejected`?
+5. ¿Cuándo utilizamos `resolve()`?
+6. ¿Cuándo utilizamos `reject()`?
+7. ¿Qué relación existe entre `resolve()` y `.then()`?
+8. ¿Qué relación existe entre `reject()` y `.catch()`?
+9. ¿Por qué `.finally()` se ejecuta tanto cuando existe éxito como cuando ocurre un error?
+10. ¿Para qué se utiliza `setTimeout` específicamente en este ejemplo?
+11. ¿Qué diferencia observaste entre ejecutar `obtenerUsuario(1)` y `obtenerUsuario(99)`?
+12. ¿Por qué decimos que el resultado de esta operación no está disponible inmediatamente?
+
+---
+
+# 4A.25. Punto de control
+
+Antes de continuar con `async/await`, debes poder explicar este flujo sin revisar el código:
+
+```text
+new Promise(...)
+      |
+      v
+   pending
+      |
+ +----+----+
+ |         |
+ v         v
+resolve   reject
+ |         |
+ v         v
+.then()  .catch()
+   \       /
+    \     /
+     v   v
+   .finally()
+```
+
+Debes comprender que:
+
+* `Promise` representa un resultado que estará disponible posteriormente;
+* `pending` significa que la operación todavía no termina;
+* `resolve()` indica que la operación terminó correctamente;
+* `reject()` indica que la operación terminó con un error;
+* `.then()` procesa el resultado exitoso;
+* `.catch()` procesa el error;
+* `.finally()` se ejecuta al finalizar cualquiera de los dos caminos.
+
+Con esta base podemos estudiar ahora `async/await`, que ofrece una forma diferente y normalmente más legible de consumir una promesa.
 
 ---
 
 # PARTE III - TYPESCRIPT Y TIPADO ESTÁTICO
 
-## Bloque 5. Primer archivo TypeScript y tipos básicos
+# Bloque 5. Primer archivo TypeScript
 
-**Objetivo:** comprobar que TypeScript detecta tipos antes de ejecutar el JavaScript generado.
+Crea:
 
-Crea `src/tipos.ts`:
+```text
+src/tipos.ts
+```
 
 ```typescript
 let nombre: string = "Yuraima";
@@ -611,25 +2477,89 @@ console.log(identidad<string>("Saiyan"));
 console.log(identidad<number>(9000));
 ```
 
-### Compilar
+---
 
-Desde la raíz del proyecto:
+## Paso 1. Compilar
+
+Desde la raíz:
 
 ```bash
 npx tsc
 ```
 
-**Qué debería ocurrir:** se creará la carpeta `dist` y dentro aparecerá `tipos.js`.
+## ¿Qué ocurre exactamente?
 
-### Ejecutar
+Cuando ejecutas `npx tsc`:
+
+1. `npx` localiza el compilador TypeScript instalado en el proyecto.
+2. `tsc` busca `tsconfig.json`.
+3. Lee `include`.
+4. Encuentra los `.ts` dentro de `src`.
+5. Comprueba los tipos.
+6. Transforma TypeScript en JavaScript.
+7. Guarda el resultado dentro de `dist`.
+
+## Resultado esperado
+
+Después de compilar:
+
+```text
+dist/
+  tipos.js
+```
+
+## ¿Por qué no ejecutamos directamente `src/tipos.ts`?
+
+Porque el objetivo de esta práctica es aprender el proceso:
+
+```text
+TypeScript fuente
+      |
+      | npx tsc
+      v
+JavaScript compilado
+      |
+      | node
+      v
+ejecución
+```
+
+---
+
+## Paso 2. Ejecutar el resultado compilado
 
 ```bash
 node dist/tipos.js
 ```
 
-### Prueba de tipado
+## ¿Qué hace?
 
-Cambia temporalmente:
+Node.js ejecuta el JavaScript generado por TypeScript.
+
+Por tanto:
+
+```text
+npx tsc
+```
+
+y:
+
+```text
+node dist/tipos.js
+```
+
+cumplen funciones diferentes.
+
+| Comando | Función |
+|---|---|
+| `npx tsc` | comprobar y compilar |
+| `node dist/tipos.js` | ejecutar |
+
+---
+
+# 19. Provocar un error de tipos de forma controlada
+
+Cambia:
 
 ```typescript
 let edad: number = 30;
@@ -641,25 +2571,53 @@ por:
 let edad: number = "treinta";
 ```
 
-Luego ejecuta:
+Ejecuta nuevamente:
 
 ```bash
 npx tsc
 ```
 
-**Qué debes observar:** TypeScript debe reportar un error de tipo.
+## ¿Por qué repetimos el comando?
 
-**Antes de continuar:** restaura `edad` a un número y vuelve a compilar sin errores.
+Porque modificaste el código y necesitamos que TypeScript vuelva a comprobarlo.
+
+## Qué debes observar
+
+El compilador debe indicar que:
+
+```text
+string
+```
+
+no es compatible con:
+
+```text
+number
+```
+
+## ¿Qué demuestra este ejercicio?
+
+Que TypeScript puede detectar un problema antes de ejecutar la aplicación.
+
+Corrige nuevamente:
+
+```typescript
+let edad: number = 30;
+```
+
+y recompila:
+
+```bash
+npx tsc
+```
+
+No continúes hasta que la compilación quede limpia.
 
 ---
 
-## Bloque 6. `unknown`, union types, enum y generic
+# Bloque 6. `unknown`, union types, enum y generic
 
-**Objetivo:** reconocer distintos mecanismos de tipado presentes en la sesión.
-
-### Actividad guiada con `unknown`
-
-Agrega en `src/tipos.ts`:
+Agrega:
 
 ```typescript
 if (typeof desconocido === "string") {
@@ -667,24 +2625,45 @@ if (typeof desconocido === "string") {
 }
 ```
 
-**Qué debes observar:** el valor `unknown` se valida antes de utilizar un método propio de `string`.
+Después:
 
-### Actividad para desarrollar
+```bash
+npx tsc
+```
 
-1. Permite que una variable `codigo` acepte `number` o `string`.
-2. Asigna primero `500` y luego `"WEB-500"`.
-3. Crea un enum llamado `Nivel` con `Basico`, `Intermedio` y `Avanzado`.
-4. Invoca `identidad<boolean>(true)` y muestra el resultado.
+y:
 
-**Resultado esperado:** `npx tsc` debe compilar sin errores.
+```bash
+node dist/tipos.js
+```
+
+## ¿Por qué siempre se respeta este orden?
+
+Porque el archivo fuente está en `src`.
+
+Después de modificar un `.ts`:
+
+```text
+modificar
+   |
+guardar
+   |
+npx tsc
+   |
+node dist/...
+```
+
+Si omites la compilación, podrías ejecutar un `.js` anterior.
 
 ---
 
-## Bloque 7. Interfaces y type aliases
+# Bloque 7. Interfaces y type aliases
 
-**Objetivo:** definir la forma esperada de un objeto y crear un nombre para un tipo combinado.
+Crea:
 
-Crea `src/models/Usuario.ts`:
+```text
+src/models/Usuario.ts
+```
 
 ```typescript
 export interface Usuario {
@@ -696,7 +2675,11 @@ export interface Usuario {
 export type Identificador = number | string;
 ```
 
-Ahora crea `src/usuarios-demo.ts`:
+Crea:
+
+```text
+src/usuarios-demo.ts
+```
 
 ```typescript
 import { Usuario, Identificador } from "./models/Usuario";
@@ -720,30 +2703,39 @@ console.log(u2);
 console.log(`Código: ${codigo}`);
 ```
 
-Compila y ejecuta:
+Compila:
 
 ```bash
 npx tsc
+```
+
+Luego ejecuta:
+
+```bash
 node dist/usuarios-demo.js
 ```
 
-### Actividad para desarrollar
+## ¿Por qué son dos comandos?
 
-Crea `u3` con tus propios datos ficticios y comprueba que la estructura respeta la interfaz.
+### `npx tsc`
 
-### Prueba de error controlado
+Comprueba que los objetos respeten la interfaz y genera JavaScript.
 
-Elimina temporalmente `activo` de `u3` y compila. Observa el error. Después restaura la propiedad.
+### `node dist/usuarios-demo.js`
 
-**Pregunta de comprobación:** ¿qué problema ayuda a detectar la interfaz antes de ejecutar el programa?
+Ejecuta el archivo ya compilado.
+
+> Si modificas `usuarios-demo.ts` y ejecutas únicamente `node dist/usuarios-demo.js`, podrías ejecutar una versión anterior.
 
 ---
 
-## Bloque 8. Clases, modificadores y herencia
+# Bloque 8. Clases, modificadores y herencia
 
-**Objetivo:** construir objetos a partir de clases y diferenciar `private`, `public` y `protected`.
+Crea:
 
-Crea `src/models/Personaje.ts`:
+```text
+src/models/Personaje.ts
+```
 
 ```typescript
 export class Personaje {
@@ -769,7 +2761,11 @@ export class Guerrero extends Personaje {
 }
 ```
 
-Crea `src/clases-demo.ts`:
+Crea:
+
+```text
+src/clases-demo.ts
+```
 
 ```typescript
 import { Guerrero } from "./models/Personaje";
@@ -781,32 +2777,42 @@ console.log(goku.atacar());
 console.log(`Nivel público: ${goku.nivel}`);
 ```
 
-Compila y ejecuta:
+Ejecuta:
 
 ```bash
 npx tsc
+```
+
+y después:
+
+```bash
 node dist/clases-demo.js
 ```
 
-**Resultado esperado:** se muestran la presentación, el ataque y el nivel.
+## Qué valida cada paso
 
-### Actividad para desarrollar
+`npx tsc` comprueba:
 
-Crea otro `Guerrero` con valores diferentes y muestra sus resultados.
+- tipos;
+- accesos;
+- imports;
+- sintaxis TypeScript.
 
-### Error frecuente
+`node` comprueba:
 
-Intentar acceder desde fuera a `nombre` o `poder`. `nombre` es `private`; `poder` es `protected` y puede utilizarse desde una subclase como `Guerrero`, pero no directamente desde el objeto externo.
+- comportamiento del JavaScript generado.
 
 ---
 
 # PARTE IV - MÓDULOS, NAMESPACES Y `tsconfig.json`
 
-## Bloque 9. Módulos con `export` e `import`
+# Bloque 9. Módulos con `export` e `import`
 
-**Objetivo:** separar responsabilidades en archivos TypeScript reutilizables.
+Crea:
 
-Crea `src/models/Producto.ts`:
+```text
+src/models/Producto.ts
+```
 
 ```typescript
 export interface Producto {
@@ -816,7 +2822,11 @@ export interface Producto {
 }
 ```
 
-Crea `src/services/CarritoService.ts`:
+Crea:
+
+```text
+src/services/CarritoService.ts
+```
 
 ```typescript
 import { Producto } from "../models/Producto";
@@ -826,7 +2836,11 @@ export function calcularTotal(productos: Producto[]): number {
 }
 ```
 
-Crea `src/main.ts`:
+Crea:
+
+```text
+src/main.ts
+```
 
 ```typescript
 import { Producto } from "./models/Producto";
@@ -841,42 +2855,61 @@ const carrito: Producto[] = [
 console.log(`Total del carrito: S/ ${calcularTotal(carrito)}`);
 ```
 
-Compila:
+---
+
+## Compilar el proyecto completo
 
 ```bash
 npx tsc
 ```
 
-Ejecuta:
+## ¿Qué cambia ahora?
+
+TypeScript debe analizar varios archivos relacionados:
+
+```text
+main.ts
+  |
+  +--> models/Producto.ts
+  |
+  +--> services/CarritoService.ts
+```
+
+El compilador sigue los imports y genera la estructura correspondiente en `dist`.
+
+---
+
+## Ejecutar el punto principal
 
 ```bash
 node dist/main.js
 ```
 
-**Resultado esperado:**
+## ¿Por qué `main.js`?
+
+Porque `main.ts` es el archivo que reúne los módulos del ejemplo.
+
+Después de compilar, el archivo ejecutable equivalente queda en:
+
+```text
+dist/main.js
+```
+
+Resultado esperado:
 
 ```text
 Total del carrito: S/ 2950
 ```
 
-### Qué debes interpretar
-
-- `Producto.ts` define una estructura exportable.
-- `CarritoService.ts` exporta una función.
-- `main.ts` importa ambos elementos para utilizarlos.
-- Cada archivo `.ts` que contiene `import` o `export` funciona como módulo.
-
-### Actividad para desarrollar
-
-Agrega un producto al carrito y verifica el nuevo total.
-
 ---
 
-## Bloque 10. Namespace
+# Bloque 10. Namespace
 
-**Objetivo:** reconocer un contenedor lógico que agrupa elementos relacionados.
+Crea:
 
-Crea `src/namespace-demo.ts`:
+```text
+src/namespace-demo.ts
+```
 
 ```typescript
 namespace Utilidades {
@@ -893,176 +2926,292 @@ console.log(Utilidades.saludar("Ángel"));
 console.log(Utilidades.despedir("Ángel"));
 ```
 
-Compila y ejecuta:
+Compila:
 
 ```bash
 npx tsc
+```
+
+Ejecuta:
+
+```bash
 node dist/namespace-demo.js
 ```
 
-**Resultado esperado:**
+## ¿Por qué el orden no cambia?
+
+Porque:
 
 ```text
-Hola, Ángel
-Adiós, Ángel
+namespace-demo.ts
 ```
 
-### Pregunta de comprobación
+es TypeScript fuente.
 
-¿Qué diferencia práctica observas entre llamar `Utilidades.saludar(...)` y utilizar una función importada desde otro archivo?
+Node.js ejecutará:
 
-Escribe tu explicación con tus propias palabras.
+```text
+namespace-demo.js
+```
+
+después de la compilación.
 
 ---
 
 # PARTE V - ACTIVIDAD INTEGRADORA
 
-## 12. Construir un mini sistema de productos
+# 20. Construir un mini sistema de productos
 
-**Objetivo:** integrar tipos, interfaces, módulos, función flecha, template literal y compilación.
+## Objetivo
 
-### Requisitos
+Integrar:
 
-Debes reutilizar la estructura ya creada y realizar estos cambios:
+- interfaces;
+- módulos;
+- función flecha;
+- template literals;
+- compilación TypeScript.
 
-1. En `Producto.ts`, agrega la propiedad `activo: boolean`.
-2. Actualiza los objetos de `main.ts` para incluir `activo`.
-3. Crea una función exportada `obtenerActivos(productos)` dentro de `CarritoService.ts`.
-4. La función debe devolver solo los productos activos.
-5. Usa una función flecha dentro de la operación de filtrado.
-6. En `main.ts`, muestra cada producto activo mediante template literals.
-7. Mantén el cálculo del total.
-8. Compila con `npx tsc`.
-9. Ejecuta `node dist/main.js`.
+## Requisitos
 
-### Código inicial para la función
+1. En `Producto.ts`, agrega:
 
-Completa únicamente la parte indicada:
+```typescript
+activo: boolean;
+```
+
+2. Actualiza todos los productos de `main.ts`.
+3. Crea una función:
 
 ```typescript
 export function obtenerActivos(productos: Producto[]): Producto[] {
   return productos.filter((producto) => {
-    // Completa la condición
     return /* condición */;
   });
 }
 ```
 
-### Debes comprobar
-
-- La compilación termina sin errores.
-- Solo se muestran productos con `activo: true`.
-- El total sigue calculándose correctamente.
-- `dist` contiene los archivos JavaScript generados.
-
-### Espacio para responder
-
-1. ¿Qué error detectaría TypeScript si olvidas agregar `activo` a uno de los productos?
-2. ¿Qué archivo define la estructura de `Producto`?
-3. ¿Qué archivo contiene la lógica para calcular el total?
-4. ¿Por qué `main.ts` no necesita conocer cómo está implementado internamente `calcularTotal`?
-5. ¿Qué función cumple `outDir` en `tsconfig.json`?
+4. Muestra solo los productos activos.
+5. Mantén el cálculo total.
 
 ---
 
-# PARTE VI - ERRORES FRECUENTES Y SOLUCIONES
+## Compilar después de modificar
 
-## 13. Tabla de diagnóstico
+```bash
+npx tsc
+```
 
-| Problema observado | Causa probable | Qué revisar | Solución recomendada |
+### ¿Por qué?
+
+Porque agregaste una propiedad obligatoria a la interfaz.
+
+TypeScript debe comprobar que todos los objetos cumplan ahora el nuevo contrato.
+
+---
+
+## Ejecutar después de una compilación correcta
+
+```bash
+node dist/main.js
+```
+
+### ¿Por qué no antes?
+
+Porque `dist/main.js` debe corresponder con la versión actual del código TypeScript.
+
+---
+
+# PARTE VI - ERRORES FRECUENTES Y DIAGNÓSTICO
+
+# 21. Tabla de diagnóstico
+
+| Problema | Causa probable | Qué revisar | Solución inicial |
 |---|---|---|---|
-| `node` no se reconoce | Node.js no quedó disponible en la terminal actual | `node -v` | Cierra la terminal, abre una nueva y vuelve a comprobar; si persiste, revisa la instalación |
-| `npm` no se reconoce | Instalación incompleta o terminal antigua | `npm -v` | Reabre la terminal o reinstala Node.js desde el sitio oficial |
-| `npx tsc` falla | TypeScript no está instalado en el proyecto | `package.json` y `node_modules` | Ejecuta `npm install typescript --save-dev` dentro de la carpeta correcta |
-| No aparece `dist` | La compilación no terminó o `outDir` está mal configurado | Mensajes de `npx tsc` y `tsconfig.json` | Corrige los errores de compilación y revisa `outDir` |
-| TypeScript marca incompatibilidad de tipo | Se asignó un valor de tipo diferente al declarado | Línea indicada por el compilador | Ajusta el dato o el tipo de acuerdo con el objetivo del código |
-| `Cannot find module` al compilar | Ruta de `import` incorrecta o archivo faltante | Rutas relativas | Verifica nombre de carpetas, archivo y uso de `../` o `./` |
-| Se intenta usar una propiedad `private` desde fuera | El modificador de acceso impide acceso externo | Declaración de la clase | Accede mediante un método público si corresponde |
-| `await` produce un error de uso | Se utilizó fuera del contexto esperado | Función que contiene `await` | Verifica que la lógica esté dentro de una función `async` |
+| `node` no se reconoce | Node.js no está disponible en la terminal | `node -v` | cierra y abre la terminal; revisa la instalación |
+| `npm` no se reconoce | npm no está disponible | `npm -v` | revisa Node.js o abre una terminal nueva |
+| PowerShell bloquea `npm.ps1` | política de ejecución | `Get-ExecutionPolicy -List` | usa Command Prompt o una alternativa autorizada |
+| `package.json` aparece en otra carpeta | ejecutaste `npm init` desde una ubicación incorrecta | ruta de la terminal | entra primero con `cd tema01-js-ts` |
+| `npx tsc` falla | falta TypeScript o estás fuera del proyecto | `package.json`, `node_modules`, ubicación | vuelve a la raíz y verifica instalación |
+| no aparece `dist` | la compilación falla o `outDir` es incorrecto | errores de `npx tsc` y `tsconfig.json` | corrige los errores y recompila |
+| TypeScript reporta incompatibilidad | el valor no coincide con el tipo | línea reportada | corrige tipo o dato |
+| `Cannot find module` | ruta de import incorrecta | `./` y `../` | revisa carpetas y nombres |
+| ejecutas un resultado antiguo | modificaste `.ts` pero no recompilaste | fecha/código de `dist` | ejecuta `npx tsc` nuevamente |
+| `await` da error | se usa fuera del contexto esperado | función contenedora | revisa que corresponda a una función `async` |
+
+---
+
+# 22. Mapa final de comandos
+
+Antes de terminar, debes poder explicar esta tabla.
+
+| Comando | Qué hace | ¿Modifica archivos? | Por qué se usa |
+|---|---|---:|---|
+| `node -v` | consulta versión de Node.js | No | verificar instalación |
+| `npm -v` | consulta versión de npm | No | verificar npm |
+| `mkdir tema01-js-ts` | crea la carpeta | Sí | aislar el proyecto |
+| `cd tema01-js-ts` | cambia ubicación | No | trabajar en la carpeta correcta |
+| `npm init -y` | inicializa npm | Sí | crear `package.json` |
+| `npm install typescript --save-dev` | instala TypeScript | Sí | disponer del compilador local |
+| `npx tsc --version` | consulta `tsc` local | No | validar instalación |
+| `npx tsc --init` | crea configuración TypeScript | Sí | generar `tsconfig.json` |
+| `node js/archivo.js` | ejecuta JavaScript | No | probar ejemplos ES6+ |
+| `npx tsc` | comprueba y compila TypeScript | Sí | generar/actualizar `dist` |
+| `node dist/archivo.js` | ejecuta JavaScript compilado | No | comprobar el resultado |
 
 ---
 
 # PARTE VII - COMPROBACIÓN Y EVIDENCIAS
 
-## 14. Preguntas de comprobación
+# 23. Preguntas de comprobación
 
-Responde con una o dos frases por pregunta.
+Responde con una o dos frases.
 
-1. ¿En qué se diferencian `let` y `const`?
-2. ¿Para qué sirven los template literals?
-3. ¿Qué problema simplifica el destructuring?
-4. ¿Cuáles son los tres estados conceptuales de una promesa?
-5. ¿Qué hace `await` dentro de una función `async`?
-6. ¿Qué ventaja aporta el tipado estático de TypeScript?
-7. ¿Cuándo utilizarías un union type?
-8. ¿Qué define una interfaz?
-9. ¿Qué diferencia existe entre `private` y `protected`?
-10. ¿Para qué sirven `export` e `import`?
-11. ¿Qué función cumple un namespace?
-12. ¿Qué hacen `rootDir`, `outDir` y `strict` en `tsconfig.json`?
+1. ¿Qué diferencia existe entre `node` y `npm`?
+2. ¿Por qué `npm init -y` se ejecuta dentro de la carpeta del proyecto?
+3. ¿Qué crea `npm init -y`?
+4. ¿Qué modifica `npm install typescript --save-dev`?
+5. ¿Por qué se utiliza `npx tsc` en lugar de depender de un `tsc` global?
+6. ¿Qué diferencia existe entre `npx tsc --init` y `npx tsc`?
+7. ¿Qué función cumple `src`?
+8. ¿Qué función cumple `dist`?
+9. ¿Por qué debemos recompilar después de modificar un `.ts`?
+10. ¿Qué hace `node dist/main.js`?
+11. ¿En qué se diferencian `let` y `const`?
+12. ¿Para qué sirven los template literals?
+13. ¿Qué problema simplifica destructuring?
+14. ¿Qué hace `await`?
+15. ¿Qué ventaja aporta el tipado estático?
+16. ¿Qué define una interfaz?
+17. ¿Qué diferencia existe entre `private` y `protected`?
+18. ¿Para qué sirven `export` e `import`?
+19. ¿Qué función cumple un namespace?
+20. ¿Qué hacen `rootDir`, `outDir` y `strict`?
 
-## 15. Evidencias que debes preparar
+---
 
-Prepara una carpeta con la siguiente estructura:
+# 24. Evidencias de entrega
+
+Prepara:
 
 ```text
 Tema01_ApellidoNombre/
   tema01-js-ts/
   evidencias/
     01-versiones.png
-    02-js-ejecutado.png
-    03-error-tipado.png
-    04-compilacion-correcta.png
-    05-integracion-final.png
+    02-estructura-proyecto.png
+    03-js-ejecutado.png
+    04-error-tipado.png
+    05-compilacion-correcta.png
+    06-integracion-final.png
     respuestas.md
 ```
 
-### Evidencias mínimas
+## Evidencias mínimas
 
-1. **01-versiones.png:** terminal mostrando `node -v`, `npm -v` y `npx tsc --version`.
-2. **02-js-ejecutado.png:** uno de los ejemplos ES6+ ejecutándose correctamente.
-3. **03-error-tipado.png:** error controlado producido por una asignación incompatible y luego corregido.
-4. **04-compilacion-correcta.png:** `npx tsc` ejecutado sin errores y carpeta `dist` visible.
-5. **05-integracion-final.png:** salida de la actividad integradora.
-6. **respuestas.md:** respuestas a las preguntas de comprobación.
+### `01-versiones.png`
 
-> No incluyas contraseñas, tokens ni datos personales sensibles en las capturas.
+Debe mostrar:
+
+```bash
+node -v
+npm -v
+npx tsc --version
+```
+
+### `02-estructura-proyecto.png`
+
+Debe mostrar:
+
+```text
+js
+src
+node_modules
+package.json
+package-lock.json
+tsconfig.json
+```
+
+### `03-js-ejecutado.png`
+
+Un ejemplo ES6+ funcionando.
+
+### `04-error-tipado.png`
+
+Error controlado de TypeScript.
+
+### `05-compilacion-correcta.png`
+
+`npx tsc` ejecutado sin errores y `dist` visible.
+
+### `06-integracion-final.png`
+
+Resultado de la actividad integradora.
+
+### `respuestas.md`
+
+Respuestas de la sección de comprobación.
 
 ---
 
-## 16. Verificación final
+# 25. Verificación final
 
-- [ ] Comprendo el objetivo de la práctica.
-- [ ] Preparé el entorno correcto.
-- [ ] Ejecuté la comprobación inicial.
-- [ ] Desarrollé los ejemplos guiados de JavaScript ES6+.
-- [ ] Compilé y ejecuté código TypeScript.
-- [ ] Probé tipos básicos y avanzados incluidos en la sesión.
-- [ ] Utilicé interfaz y type alias.
-- [ ] Construí y ejecuté una clase con herencia.
-- [ ] Organicé código con módulos.
-- [ ] Ejecuté el ejemplo de namespace.
-- [ ] Validé `rootDir`, `outDir` y `strict`.
+- [ ] Sé qué hace `node`.
+- [ ] Sé qué hace `npm`.
+- [ ] Sé por qué debo comprobar la carpeta actual.
+- [ ] Comprendo `mkdir` y `cd`.
+- [ ] Comprendo por qué existe `package.json`.
+- [ ] Comprendo qué ocurre al instalar TypeScript.
+- [ ] Comprendo para qué sirve `npx`.
+- [ ] Comprendo para qué sirve `tsc`.
+- [ ] Comprendo la diferencia entre `tsc --init` y `tsc`.
+- [ ] Comprendo el flujo `src -> tsc -> dist`.
+- [ ] Ejecuté JavaScript ES6+.
+- [ ] Compilé TypeScript.
+- [ ] Provocé y corregí un error de tipos.
+- [ ] Utilicé interfaces y clases.
+- [ ] Organicé código mediante módulos.
+- [ ] Probé un namespace.
 - [ ] Completé la actividad integradora.
-- [ ] Revisé los errores frecuentes.
-- [ ] Preparé las evidencias solicitadas.
+- [ ] Preparé las evidencias.
 
 ---
 
-# 17. Cierre académico
+# 26. Cierre académico
 
-En esta práctica pasaste de ejecutar JavaScript moderno a trabajar con un proyecto TypeScript estructurado. Utilizaste características de ES6+, manejaste asincronía, incorporaste tipado estático, definiste interfaces y clases, y finalmente organizaste archivos mediante módulos y un namespace.
+En esta práctica pasaste de ejecutar JavaScript moderno a trabajar con un proyecto TypeScript estructurado.
 
-Antes de la siguiente sesión, repasa especialmente:
+La idea principal que debes conservar no es una lista aislada de comandos, sino este flujo:
 
-- cuándo utilizar `let` y `const`;
-- la diferencia entre una promesa y su consumo con `async/await`;
-- el propósito de los tipos en TypeScript;
-- la función de interfaces, clases y modificadores de acceso;
-- el recorrido `src -> npx tsc -> dist`;
-- el uso de `export` e `import`.
+```text
+1. Verifico las herramientas
+   node -v
+   npm -v
 
-Evita avanzar si tu proyecto todavía presenta errores de compilación. La carpeta `dist` debe ser el resultado de un proyecto TypeScript que compile correctamente.
+2. Creo y ubico el proyecto
+   mkdir
+   cd
+
+3. Inicializo npm
+   npm init -y
+
+4. Instalo TypeScript
+   npm install typescript --save-dev
+
+5. Creo la configuración
+   npx tsc --init
+
+6. Escribo TypeScript
+   src/*.ts
+
+7. Compruebo y compilo
+   npx tsc
+
+8. Ejecuto el resultado
+   node dist/*.js
+```
+
+Si puedes explicar **qué hace, por qué se ejecuta y qué produce cada paso**, entonces ya no estás copiando comandos: estás comprendiendo el flujo de trabajo.
 
 ## Recursos de refuerzo
 
