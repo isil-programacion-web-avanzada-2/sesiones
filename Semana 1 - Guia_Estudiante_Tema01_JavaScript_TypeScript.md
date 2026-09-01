@@ -186,6 +186,13 @@ cd tema01-js-ts
 npm init -y
 ```
 
+Nota: en caso salga error de bloqueo por politicas de window:
+"PowerShell está bloqueando el script npm.ps1 por la política de ejecución de Windows:"
+En la misma terminal de VS Code, ejecuta:
+```bash
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
 **Qué debería ocurrir:** se creará el archivo `package.json`.
 
 **Cómo comprobarlo:** abre la carpeta en Visual Studio Code y localiza `package.json`.
