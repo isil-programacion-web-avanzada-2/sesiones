@@ -67,7 +67,7 @@ npm create vite@latest estado-react-s10 -- --template react
 cd estado-react-s10
 npm install
 ```
-
+Al ejecutar la primera linea create vite@latest estado-react-s10 -- --template react, debes dar click en "y" luego marcar ESLint
 El primer comando crea una carpeta `estado-react-s10` con la plantilla React. `--template react` solicita JSX y configuración React; el separador `--` hace llegar esa opción al creador de Vite. `cd` entra en la carpeta; `npm install` descarga las dependencias definidas en `package.json`. No continúes hasta que el comando termine sin errores. Si la carpeta ya existe, conserva tu trabajo y crea otra con nombre diferente.
 
 ### Paso 2 — Comprobar que React funciona antes de modificarlo
